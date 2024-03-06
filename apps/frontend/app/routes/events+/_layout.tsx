@@ -26,28 +26,36 @@ const PageComponent = () => {
 
   return (
     <>
-      <header className="py-5 flex gap-x-5">
+      <header className="py-5 flex gap-x-5 justify-end h-28">
         {/** this is a title */}
-        <img
-          alt="profile"
-          className="rounded w-28 h-28"
-          src="https://via.placeholder.com/150"
-        />
-        <div>
-          <h1 className="mr-4 inline-block text-2xl">{data.name}</h1>
-          {data.sub.free ? (
-            <span className="text-md font-bold px-2 py-[0.5px] rounded-full bg-orange-400 text-white">
+
+        <div className="h-28 w-90 flex flex-col">
+          <div className="h-14 flex flex-row justify-between items-center">
+            <h1 className="mr-4 inline-block text-2xl">{data.name}</h1>
+            {data.sub.free ? (
+                <span className="h-10 text-sm rounded-full py-2 px-2 bg-orange-400 text-white">
               freemium
             </span>
-          ) : (
-            <span className="text-md font-bold px-2 py-[0.5px] rounded-full bg-emerald-400 text-white">
+            ) : (
+                <span className="h-10 text-sm rounded-full py-2 px-2 bg-emerald-400 text-white">
               premium
             </span>
-          )}
+            )}
+          </div>
+
+          <div className="h-14 w-90">
+            <button className="bg-zinc-300 h-full w-full hover:bg-zinc-400">Sign Out</button>
+          </div>
+
         </div>
+        <img
+            alt="profile"
+            className="w-28 h-28 object-cover"
+            src="/profile_photo_example.jpg"
+        />
       </header>
       <div>
-        <Outlet />
+        <Outlet/>
       </div>
     </>
   )
