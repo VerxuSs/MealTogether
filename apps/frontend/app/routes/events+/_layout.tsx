@@ -33,29 +33,30 @@ const PageComponent = () => {
           <div className="h-14 flex flex-row justify-between items-center">
             <h1 className="mr-4 inline-block text-2xl">{data.name}</h1>
             {data.sub.free ? (
-                <span className="h-10 text-sm rounded-full py-2 px-2 bg-orange-400 text-white">
-              freemium
-            </span>
+              <span className="h-10 text-sm rounded-full py-2 px-2 bg-orange-400 text-white">
+                freemium
+              </span>
             ) : (
-                <span className="h-10 text-sm rounded-full py-2 px-2 bg-emerald-400 text-white">
-              premium
-            </span>
+              <span className="h-10 text-sm rounded-full py-2 px-2 bg-emerald-400 text-white">
+                premium
+              </span>
             )}
           </div>
 
           <div className="h-14 w-90">
-            <button className="bg-zinc-300 h-full w-full hover:bg-zinc-400">Sign Out</button>
+            <button className="bg-zinc-300 h-full w-full hover:bg-zinc-400">
+              Sign Out
+            </button>
           </div>
-
         </div>
         <img
-            alt="profile"
-            className="w-28 h-28 object-cover"
-            src="/profile_photo_example.jpg"
+          alt="profile"
+          className="w-28 h-28 object-cover"
+          src="/profile_photo_example.jpg"
         />
       </header>
       <div>
-        <Outlet/>
+        <Outlet />
       </div>
     </>
   )

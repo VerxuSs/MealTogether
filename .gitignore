@@ -1,5 +1,5 @@
 .env
-
+pnpm-lock.yaml
 .husky/
 
 .cache/
