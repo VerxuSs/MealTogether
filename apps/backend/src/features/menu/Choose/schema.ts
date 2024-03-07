@@ -11,7 +11,7 @@ const Params = Type.Object(
     }),
   },
   {
-    readOnly: true,
+    readOnly: true, //  empêche de modifier les valeurs récupérées
   },
 )
 

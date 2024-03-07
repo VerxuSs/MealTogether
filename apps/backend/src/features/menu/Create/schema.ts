@@ -15,7 +15,6 @@ const Body = Type.Object(
       description: "The menu's description",
       maxLength: 1000,
     }),
-
     diets: Type.Array(
       Type.Integer({
         description: 'The array of diets constraints id',

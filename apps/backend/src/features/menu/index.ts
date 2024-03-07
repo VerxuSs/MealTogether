@@ -6,13 +6,13 @@ export * from './GetById'
 import Choose from './Choose'
 import Create from './Create'
 import Delete from './Delete'
-import View from './GetById'
+import GetById from './GetById'
 
 const Menu = {
   Create,
   Choose,
   Delete,
-  View,
+  GetById,
 }
 
 export { Menu }
