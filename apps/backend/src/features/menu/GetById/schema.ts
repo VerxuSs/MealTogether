@@ -37,6 +37,9 @@ const Reply = Type.Object(
         description: Type.String({
           description: "The dish's description",
         }),
+        name: Type.String({
+          description: "The dish's name",
+        }),
         ingredients: Type.Array(
           Type.Object({
             id: Type.Integer({
