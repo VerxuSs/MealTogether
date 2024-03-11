@@ -8,15 +8,14 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
 
   if (identity === undefined) throw new Error('Unauthorized')
 
-  const menuToDelete = await prisma.menu.findUnique({
+  const menu = await prisma.menu.delete({
     where: {
-      id: request.params.menuId, // Unique identifier for the menu
-    },
-    include: {
-      event: true,
+      id: request.params.menuId,
+      event: {
+        userId: identity.user,
+      },
     },
   })
 
-  if (menuToDelete === null) return response.notFound()
-  if (menuToDelete.event.userId != identity.user) return response.unauthorized()
+  if (menu === null) return response.notFound()
 }
