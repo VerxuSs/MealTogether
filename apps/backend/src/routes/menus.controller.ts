@@ -9,10 +9,7 @@ const route = async (fastify: FastifyInstance) => {
   fastify.delete('/:menuId', Delete.Shorthand, Delete.Route(fastify))
   fastify.get('/:menuId', GetById.Shorthand, GetById.Route(fastify))
 }
-// post et put on peut avoir un body pour le reste non
 
 export default async (fastify: FastifyInstance) => {
   await fastify.register(route, { prefix: '/menus' })
 }
-// http://127.0.0.1:3000/doc/
-// pnpm dev ( après docker)

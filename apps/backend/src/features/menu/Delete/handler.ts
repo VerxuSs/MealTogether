@@ -2,7 +2,6 @@ import { MyRoute } from '../../../fastify'
 import prisma from '../../../utils/prisma'
 import { Interface } from './schema'
 
-// c'est ici
 export const Handler: MyRoute<Interface> = () => async (request, response) => {
   const identity = request.requestContext.get('identity')
 

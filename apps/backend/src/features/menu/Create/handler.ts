@@ -32,9 +32,8 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
           id: event.id,
         },
       },
-      // Diets are specified upon the menu's creation !!!!
       diets: {
-        connect: request.body.diets.map((diet) => ({ id: diet })), // map retourne un array tq chaque élément de la liste est associée à une entité ( par les ids )
+        connect: request.body.diets.map((diet) => ({ id: diet })),
       },
     },
     select: {

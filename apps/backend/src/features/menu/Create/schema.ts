@@ -30,7 +30,7 @@ const Body = Type.Object(
     ),
   },
   {
-    readOnly: true, // à quoi le readonly sert ?
+    readOnly: true,
   },
 )
 
