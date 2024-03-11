@@ -56,6 +56,8 @@ model Participant {
 model Menu {
   id Int @id @default(autoincrement())
 
+  name String
+
   eventId Int
 
   description String?
@@ -73,6 +75,8 @@ model Dish {
   id Int @id @default(autoincrement())
 
   menuId Int
+
+  name String
 
   description String?
 

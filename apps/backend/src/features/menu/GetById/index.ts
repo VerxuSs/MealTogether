@@ -3,4 +3,4 @@ import { Featured } from '../../../fastify'
 import { Schema } from './schema'
 import { Handler } from './handler'
 
-export default Featured('menu.view', Schema, Handler)
+export default Featured('menu.getById', Schema, Handler)

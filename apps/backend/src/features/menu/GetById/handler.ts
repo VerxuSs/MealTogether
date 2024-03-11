@@ -12,16 +12,39 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
   const menu = await prisma.menu.findUnique({
     where: {
       id: request.params.menuId,
+      OR: [
+        {
+          event: {
+            userId: identity.user,
+          },
+        },
+        {
+          participants: {
+            some: {
+              userId: identity.user,
+            },
+          },
+        },
+      ],
     },
     include: {
-      participants: true,
-      event: true,
-      diets: true,
+      diets: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       dishes: {
         include: {
           ingredients: {
-            include: {
-              ingredient: true,
+            select: {
+              ingredient: {
+                select: {
+                  id: true,
+                  name: true,
+                  description: true,
+                },
+              },
             },
           },
         },
@@ -31,22 +54,17 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
 
   if (menu === null) return response.notFound()
 
-  if (
-    !menu.participants.some((obj) => obj.userId === identity.user) &&
-    menu.event.userId != identity.user
-  )
-    return response.unauthorized()
-
   return await response.send({
-    name: 'MENU',
-    description: menu.description ?? 'A description', // make it nullable in the
+    name: menu.name,
     diets: menu.diets,
+    description: menu.description ?? undefined,
     dishes: menu.dishes.map((dish) => ({
-      description: dish.description ?? 'A description',
-      name: 'DISH',
-      ingredients: dish.ingredients.map((obj) => ({
-        id: obj.ingredient.id,
-        name: obj.ingredient.name,
+      name: dish.name,
+      description: dish.description ?? undefined,
+      ingredients: dish.ingredients.map(({ ingredient }) => ({
+        id: ingredient.id,
+        name: ingredient.name,
+        description: ingredient.description ?? undefined,
       })),
     })),
   })

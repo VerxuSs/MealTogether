@@ -19,9 +19,11 @@ const Reply = Type.Object(
     name: Type.String({
       description: "The menu's name",
     }),
-    description: Type.String({
-      description: "The menu's description",
-    }),
+    description: Type.Optional(
+      Type.String({
+        description: "The menu's description",
+      }),
+    ),
     diets: Type.Array(
       Type.Object({
         name: Type.String({
@@ -34,9 +36,11 @@ const Reply = Type.Object(
     ),
     dishes: Type.Array(
       Type.Object({
-        description: Type.String({
-          description: "The dish's description",
-        }),
+        description: Type.Optional(
+          Type.String({
+            description: "The dish's description",
+          }),
+        ),
         name: Type.String({
           description: "The dish's name",
         }),
@@ -46,8 +50,13 @@ const Reply = Type.Object(
               description: "The ingredient's id",
             }),
             name: Type.String({
-              description: "The igredirnt's name",
+              description: "The ingredient's name",
             }),
+            description: Type.Optional(
+              Type.String({
+                description: "The ingredient's description",
+              }),
+            ),
           }),
         ),
       }),

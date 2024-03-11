@@ -25,6 +25,7 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
 
   const menu = await prisma.menu.create({
     data: {
+      name: request.body.name,
       description: request.body.description,
       event: {
         connect: {

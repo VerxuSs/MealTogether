@@ -11,6 +11,10 @@ const Params = Type.Object({
 
 const Body = Type.Object(
   {
+    name: Type.String({
+      description: "The menu's name",
+      maxLength: 30,
+    }),
     description: Type.String({
       description: "The menu's description",
       maxLength: 1000,
