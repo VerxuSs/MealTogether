@@ -6,10 +6,15 @@ import prisma from '../../../utils/prisma'
 
 import { Interface } from './schema'
 
+import User from '../index'
+import Dish from '../../dish'
+import Menu from '../../menu'
 import Event from '../../event'
 import Participant from '../../participant'
-import User from '../index'
-import Menu from '../../menu'
+
+const Claims = (features: Record<string, { Claim: string }>) => {
+  return Object.values(features).map(({ Claim }) => Claim)
+}
 
 export const Handler: MyRoute<Interface> = () => async (request, response) => {
   const user = await prisma.user.findFirst({
@@ -31,22 +36,11 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
     const payload: Static<typeof MySessionSchema> = {
       user: user.id,
       claims: [
-        Event.Create.Claim,
-        Event.Delete.Claim,
-        Event.GetOne.Claim,
-        Event.ChangeStatus.Claim,
-        Participant.ChooseMenu.Claim,
-        Participant.Leave.Claim,
-        Participant.Join.Claim,
-        User.LinkDiet.Claim,
-        User.GetAllDiet.Claim,
-        User.UnlinkDiet.Claim,
-        Event.GetHosting.Claim,
-        Event.GetAttending.Claim,
-        Menu.Choose.Claim,
-        Menu.Create.Claim,
-        Menu.Delete.Claim,
-        Menu.GetById.Claim,
+        ...Claims(User),
+        ...Claims(Menu),
+        ...Claims(Dish),
+        ...Claims(Event),
+        ...Claims(Participant),
       ],
     }
 
