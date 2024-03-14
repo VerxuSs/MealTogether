@@ -23,5 +23,5 @@ const route = async (fastify: FastifyInstance) => {
 }
 
 export default async (fastify: FastifyInstance) => {
-  await fastify.register(route, { prefix: '/diet' })
+  await fastify.register(route, { prefix: '/diets' })
 }

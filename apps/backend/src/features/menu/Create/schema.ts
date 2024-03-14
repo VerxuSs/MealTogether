@@ -53,7 +53,7 @@ export interface Interface extends RouteGenericInterface {
 }
 
 export const Schema: FastifySchema = {
-  tags: ['menu'],
+  tags: ['event'],
   description: 'Create a menu',
   body: Body,
   params: Params,
