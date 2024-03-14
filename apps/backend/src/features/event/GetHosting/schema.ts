@@ -18,10 +18,6 @@ const Event = Type.Object({
   }),
   // startDate: Type.String(), // Adjust the type if needed
   // endDate: Type.String(), // Adjust the type if needed
-  userId: Type.Number({
-    description: 'id of the author',
-    minimum: 0,
-  }),
 })
 
 const Reply = Type.Array(Event, {

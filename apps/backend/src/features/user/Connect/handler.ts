@@ -7,6 +7,8 @@ import prisma from '../../../utils/prisma'
 import { Interface } from './schema'
 
 import Event from '../../event'
+import Participant from '../../participant'
+import User from '../index'
 import Menu from '../../menu'
 
 export const Handler: MyRoute<Interface> = () => async (request, response) => {
@@ -30,6 +32,15 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
       user: user.id,
       claims: [
         Event.Create.Claim,
+        Event.Delete.Claim,
+        Event.GetOne.Claim,
+        Event.ChangeStatus.Claim,
+        Participant.ChooseMenu.Claim,
+        Participant.Leave.Claim,
+        Participant.Join.Claim,
+        User.LinkDiet.Claim,
+        User.GetAllDiet.Claim,
+        User.UnlinkDiet.Claim,
         Event.GetHosting.Claim,
         Event.GetAttending.Claim,
         Menu.Choose.Claim,

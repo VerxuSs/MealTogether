@@ -15,7 +15,7 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
       OR: [
         {
           event: {
-            userId: identity.user,
+            authorId: identity.user,
           },
         },
         {

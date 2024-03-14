@@ -1,7 +1,5 @@
 import { MyRoute } from '../../../fastify'
-
 import prisma from '../../../utils/prisma'
-
 import { Interface } from './schema'
 
 export const Handler: MyRoute<Interface> = () => async (request, response) => {
@@ -9,23 +7,21 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
 
   if (identity === undefined) throw new Error('Unauthorized')
 
-  const events = await prisma.event.findMany({
+  const dietToUser = await prisma.user.findUnique({
     where: {
-      participants: {
-        some: {
-          user: {
-            id: identity.user,
-          },
+      id: identity.user,
+    },
+    include: {
+      diets: {
+        select: {
+          id: true,
+          name: true,
         },
       },
     },
-    select: {
-      id: true,
-      name: true,
-      authorId: true,
-      nbParticipantMax: true,
-    },
   })
 
-  return response.send(events)
+  if (!dietToUser) throw new Error('Unrecognized User')
+
+  return response.send(dietToUser.diets)
 }
