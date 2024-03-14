@@ -81,9 +81,9 @@ model Menu {
 model Dish {
   id Int @id @default(autoincrement())
 
-  menuId Int
-
   name String
+
+  menuId Int
 
   description String?
 

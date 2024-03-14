@@ -1,13 +1,28 @@
 import { FastifyInstance } from 'fastify'
-import Menu from '../features/menu'
 
-const { Create, Choose, Delete, GetById } = Menu
+import Menu from '../features/menu'
+import Dish from '../features/dish'
 
 const route = async (fastify: FastifyInstance) => {
-  fastify.post('/create', Create.Shorthand, Create.Route(fastify))
-  fastify.put('/:menuId/choose', Choose.Shorthand, Choose.Route(fastify))
-  fastify.delete('/:menuId', Delete.Shorthand, Delete.Route(fastify))
-  fastify.get('/:menuId', GetById.Shorthand, GetById.Route(fastify))
+  fastify.get('/:menuId', Menu.GetById.Shorthand, Menu.GetById.Route(fastify))
+
+  fastify.post(
+    '/:menuId/dish',
+    Dish.Create.Shorthand,
+    Dish.Create.Route(fastify),
+  )
+
+  fastify.put(
+    '/:menuId/choose',
+    Menu.Choose.Shorthand,
+    Menu.Choose.Route(fastify),
+  )
+
+  fastify.delete(
+    '/:menuId/delete',
+    Menu.Delete.Shorthand,
+    Menu.Delete.Route(fastify),
+  )
 }
 
 export default async (fastify: FastifyInstance) => {

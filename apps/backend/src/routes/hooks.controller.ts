@@ -2,10 +2,8 @@ import { FastifyInstance } from 'fastify'
 
 import { Hook } from '../features/hook'
 
-const { Sse } = Hook
-
 const route = async (fastify: FastifyInstance) => {
-  fastify.get('/sse', Sse.Shorthand, Sse.Route(fastify))
+  fastify.get('/sse', Hook.Sse.Shorthand, Hook.Sse.Route(fastify))
 }
 
 export default async (fastify: FastifyInstance) => {
