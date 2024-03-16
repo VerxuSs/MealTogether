@@ -7,6 +7,7 @@ import prisma from '../../../utils/prisma'
 import { Interface } from './schema'
 
 import User from '../index'
+import Diet from '../../diet'
 import Dish from '../../dish'
 import Menu from '../../menu'
 import Event from '../../event'
@@ -19,8 +20,7 @@ const Claims = (features: Record<string, { Claim: string }>) => {
 export const Handler: MyRoute<Interface> = () => async (request, response) => {
   const user = await prisma.user.findFirst({
     where: {
-      firstname: request.body.firstname,
-      lastname: request.body.lastname,
+      email: request.body.email,
     },
     select: {
       id: true,
@@ -36,6 +36,7 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
     const payload: Static<typeof MySessionSchema> = {
       user: user.id,
       claims: [
+        ...Claims(Diet),
         ...Claims(User),
         ...Claims(Menu),
         ...Claims(Dish),
