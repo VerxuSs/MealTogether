@@ -12,8 +12,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWheatAlt } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Dropdown, Modal } from 'flowbite-react'
-import { Dish, Ingredient, Menu } from '~/models'
-import { manageEventPageFixture, availableIngredientsFixture } from '~/fixtures'
+import { Dish, Ingredient, Menu, Constraint } from '~/models'
+import {
+  manageEventPageFixture,
+  availableIngredientsFixture,
+  availableConstraintsFixture
+} from '~/fixtures'
 
 export const meta: MetaFunction = () => {
   return [
@@ -36,12 +40,12 @@ const PageComponent: FC = () => {
   const { event, menus } = useLoaderData<typeof loader>()
   const [typingNewMenu, setTypingNewMenu] = useState(false)
   const [newMenuName, setNewMenuName] = useState('')
-  const [newMenus, setNewMenus] = useState<Menu[]>(menus) // Initialize newMenus state as an empty array
+  const [newMenus, setNewMenus] = useState<Menu[]>(menus)
   const [newMenuDescription, setNewMenuDescription] = useState('')
   const [openDishModal, setOpenDishModal] = useState(false)
   const [addDishMenuId, setAddDishMenuId] = useState(-1)
   const [newDishIngredients, setNewDishIngredients] = useState<Ingredient[]>([])
-  // const [availableIngredients, setNewAvailableIngredients] = useState<Ingredient[]>(availableIngredientsFixture)
+  const [availableIngredients, setNewAvailableIngredients] = useState<Ingredient[]>(availableIngredientsFixture)
   const [newDishName, setNewDishName] = useState('')
   const [newDishDescription, setNewDishDescription] = useState('')
 
@@ -107,8 +111,23 @@ const PageComponent: FC = () => {
       })
     })
 
+    clearDishForm();
     setAddDishMenuId(-1)
     setOpenDishModal(false)
+  }
+
+
+  const deleteDishFromMenu = (menuId: number, dishId: number) => {
+    // TODO: call backend to delete dish from menu
+    // TODO: if response is 204 do the following
+    setNewMenus((prevMenus) => {
+      return prevMenus.map((menu) => {
+        if (menu.id === menuId) {
+          menu.dishes = menu.dishes.filter((dish) => dish.id !== dishId)
+        }
+        return menu
+      })
+    })
   }
 
   const clearDishForm = () => {
@@ -117,11 +136,49 @@ const PageComponent: FC = () => {
     setNewDishIngredients([])
   }
 
+  const removeIngredientFromAvailableIngredients = (ingredient: Ingredient) => {
+    setNewAvailableIngredients((prevIngredients: Ingredient[]) => {
+      return prevIngredients.filter((i) => i.id !== ingredient.id)
+    })
+  }
+
   const addIngredientToDish = (ingredient: Ingredient) => {
+    // no intermediary backend call needed
     setNewDishIngredients((prevIngredients: Ingredient[]) => [
       ...prevIngredients,
       ingredient,
     ])
+    removeIngredientFromAvailableIngredients(ingredient);
+  }
+
+  const addConstraintToMenu = (constraint: Constraint, menuId: number) => {
+    // TODO: call backend to add constraint to menu
+    // TODO: if response is 201 do the following
+
+
+    setNewMenus((prevMenus) => {
+        return prevMenus.map((menu) => {
+            if (menu.id === menuId) {
+              // check if constraint is already in the menu
+                if (menu.constraints.includes(constraint)) {
+                    return menu
+                }
+                menu.constraints.push(constraint)
+            }
+            return menu
+        })
+    })
+  }
+
+  const removeConstraintFromMenu = (constraint: Constraint, menuId: number) => {
+    setNewMenus((prevMenus) => {
+        return prevMenus.map((menu) => {
+            if (menu.id === menuId) {
+                menu.constraints = menu.constraints.filter((c) => c !== constraint)
+            }
+            return menu
+        })
+    })
   }
 
   return (
@@ -161,16 +218,33 @@ const PageComponent: FC = () => {
                           <FontAwesomeIcon
                             className="mr-2 hover:cursor-pointer"
                             icon={faTrash}
+                            onClick={() => deleteDishFromMenu(menu.id, dish.id)}
                           />
                         </div>
                       ))}
                     </article>
                   </div>
                   <div className="flex flex-row justify-between w-full">
-                    <span className="text-gray-400 font-thin mx-2">
-                      {' '}
-                      + add constraint
-                    </span>
+                    <Dropdown
+                        className="font-thin text-sm h-40 overflow-auto"
+                        label="add constraint"
+                        renderTrigger={() => (
+                            <span className="text-gray-400 mx-2 font-thin hover:cursor-pointer hover:text-black text-left">
+                              + add constraint
+                            </span>
+                        )}
+                    >
+                      {availableConstraintsFixture.map((constraint) => (
+                          <>
+                            <Dropdown.Item
+                                onClick={() => addConstraintToMenu(constraint, menu.id)}
+                                key={constraint.id}
+                            >
+                              {constraint.name}
+                            </Dropdown.Item>
+                          </>
+                      ))}
+                    </Dropdown>
                     <span
                       className="text-gray-400 font-thin mx-2 hover:cursor-pointer hover:text-black"
                       onClick={() => handleAddDishToMenuModalOpen(menu.id)}
@@ -179,13 +253,19 @@ const PageComponent: FC = () => {
                     </span>
                   </div>
 
-                  {menu.allergens.map((allergen) => {
+                  {menu.constraints.map((constraint) => {
                     return (
-                      <DietConstraint key={allergen} dietConstraint={allergen}>
+                      <DietConstraint key={constraint.id} dietConstraint={constraint.name}>
                         <FontAwesomeIcon icon={faWheatAlt} />
                         <span className={'opacity-100 font-thin mx-4 text-sm'}>
-                          {allergen}
+                          {constraint.name}
                         </span>
+                        <div
+                            className="text-gray-400 hover:text-black hover:cursor-pointer font-thin text-xs"
+                            onClick={() => removeConstraintFromMenu(constraint, menu.id)}
+                        >
+                          remove
+                        </div>
                       </DietConstraint>
                     )
                   })}
@@ -244,6 +324,9 @@ const PageComponent: FC = () => {
         </div>
       </div>
       <Modal show={openDishModal} onClose={() => setOpenDishModal(false)}>
+        <Modal.Header>
+          Add dish to menu
+        </Modal.Header>
         <Modal.Body>
           <input
             className="w-full text-black text-2xl font-thin bg-transparent mb-3"
@@ -279,7 +362,7 @@ const PageComponent: FC = () => {
               </span>
             )}
           >
-            {availableIngredientsFixture.map((ingredient) => (
+            {availableIngredients.map((ingredient) => (
               <>
                 <Dropdown.Item
                   onClick={() => addIngredientToDish(ingredient)}

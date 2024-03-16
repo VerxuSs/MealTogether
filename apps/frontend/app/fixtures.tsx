@@ -1,3 +1,5 @@
+import { Constraint } from './models'
+
 const manageEventPageFixture = {
   event: {
     id: 10,
@@ -11,7 +13,7 @@ const manageEventPageFixture = {
       id: 0,
       name: 'Vegetarian',
       description:
-        'Vegetarianism is the practice of abstaining from the consumption of meat. It may also include abstaining ',
+          'Vegetarianism is the practice of abstaining from the consumption of meat. It may also include abstaining ',
       dishes: [
         {
           id: 0,
@@ -60,8 +62,11 @@ const manageEventPageFixture = {
           ],
         },
       ],
-      allergens: ['Gluten', 'Dairy'],
-    },
+      constraints: [
+        new Constraint(678, 'Gluten'),
+        new Constraint(5678, 'Dairy'),
+      ],
+    }
   ],
 }
 
@@ -76,7 +81,7 @@ const viewEventFixture = {
       id: 0,
       name: 'Vegetarian',
       description:
-        'Vegetarianism is the practice of abstaining from the consumption of meat. It may also include abstaining ',
+          'Vegetarianism is the practice of abstaining from the consumption of meat. It may also include abstaining ',
       dishes: [
         {
           id: 0,
@@ -125,13 +130,16 @@ const viewEventFixture = {
           ],
         },
       ],
-      allergens: ['Gluten', 'Dairy'],
+      constraints: [
+        new Constraint(0, 'Gluten'),
+        new Constraint(1, 'Dairy')
+      ],
     },
     {
       id: 1,
       name: 'Vegetarian',
       description:
-        'Vegetarianism is the practice of abstaining from the consumption of meat.',
+          'Vegetarianism is the practice of abstaining from the consumption of meat.',
       dishes: [
         {
           id: 0,
@@ -180,7 +188,10 @@ const viewEventFixture = {
           ],
         },
       ],
-      allergens: ['Fish', 'Soy'],
+      constraints: [
+        new Constraint(2, 'Fish'),
+        new Constraint(3, 'Soy')
+      ],
     },
     {
       id: 2,
@@ -211,13 +222,16 @@ const viewEventFixture = {
           ],
         },
       ],
-      allergens: ['Gluten', 'Dairy'],
+      constraints: [
+        new Constraint(0, 'Gluten'),
+        new Constraint(1, 'Dairy')
+      ],
     },
     {
       id: 3,
       name: 'Menu 4',
       description:
-        'An omnivore is an animal that has the ability to eat and survive on both plant and anim',
+          'An omnivore is an animal that has the ability to eat and survive on both plant and anim',
       dishes: [
         {
           id: 0,
@@ -243,7 +257,9 @@ const viewEventFixture = {
           ],
         },
       ],
-      allergens: ['Gluten'],
+      constraints: [
+        new Constraint(0, 'Gluten')
+      ],
     },
   ],
 }
@@ -331,4 +347,68 @@ const availableIngredientsFixture = [
   },
 ]
 
-export { manageEventPageFixture, viewEventFixture, availableIngredientsFixture }
+
+const availableConstraintsFixture = [
+    {
+      id: 0,
+      name: 'Gluten',
+    },
+    {
+        id: 1,
+        name: 'Dairy',
+    },
+    {
+        id: 2,
+        name: 'Fish',
+        },
+        {
+        id: 3,
+        name: 'Soy',
+    },
+  {
+    id: 4,
+    name: 'Nuts',
+  },
+  {
+    id: 5,
+    name: 'Shellfish',
+  },
+  {
+    id: 6,
+    name: 'Eggs',
+  },
+  {
+    id: 7,
+    name: 'Peanuts',
+  },
+  {
+    id: 8,
+    name: 'Wheat',
+  },
+  {
+    id: 9,
+    name: 'Sesame',
+  },
+  {
+    id: 10,
+    name: 'Sulfites',
+  },
+  {
+    id: 11,
+    name: 'Celery',
+  },
+  {
+    id: 12,
+    name: 'Mustard',
+  },
+  {
+    id: 13,
+    name: 'Lupin',
+  },
+  {
+    id: 14,
+    name: 'Molluscs',
+  },
+]
+
+export { manageEventPageFixture, viewEventFixture, availableIngredientsFixture, availableConstraintsFixture }
