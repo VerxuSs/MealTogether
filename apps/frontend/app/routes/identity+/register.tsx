@@ -7,6 +7,8 @@ import { Form, Link, redirect } from '@remix-run/react'
 import { Type } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
 
+import { apiClient } from '~/client/api'
+
 import Input from '~/client/components/commons/forms/Input'
 import Submit from '~/client/components/commons/forms/Submit'
 
@@ -25,6 +27,14 @@ const ActionBody = Type.Object({
   password: Type.String({
     minLength: 8,
   }),
+  lastname: Type.String({
+    minLength: 2,
+    maxLength: 50,
+  }),
+  firstname: Type.String({
+    minLength: 2,
+    maxLength: 50,
+  }),
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -32,9 +42,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const body = Value.Decode(ActionBody, form.entries())
 
-  void body
-
-  // TODO: Implement register logic here
+  await apiClient(request).POST('/users/register', {
+    body: {
+      email: body.email,
+      password: body.password,
+      lastname: body.lastname,
+      firstname: body.firstname,
+    },
+  })
 
   return redirect('/identity/register')
 }
@@ -45,6 +60,8 @@ const PageComponent: FC = () => {
       <Form method="POST">
         <div className="flex gap-y-3">
           <Input type="text" name="email" placeholder="Email" />
+          <Input type="text" name="firstname" placeholder="Firstname" />
+          <Input type="text" name="lastname" placeholder="Lastname" />
           <Input type="password" name="password" placeholder="Password" />
         </div>
         <div>

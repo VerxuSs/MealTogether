@@ -9,6 +9,8 @@ import { Value } from '@sinclair/typebox/value'
 
 import storage from '~/server/storage/session.server'
 
+import { apiClient } from '~/client/api'
+
 import Input from '~/client/components/commons/forms/Input'
 import Submit from '~/client/components/commons/forms/Submit'
 
@@ -34,19 +36,28 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const body = Value.Decode(ActionBody, form.entries())
 
-  void body
-
-  const session = await storage.extractSession(request)
-
-  session.state.set('context', {
-    token: 'TODO: get token from server',
-  })
-
-  return redirect('/dashboard', {
-    headers: {
-      'Set-Cookie': await storage.commitSession(session.state),
+  const user = await apiClient(request).POST('/users/connect', {
+    body: {
+      email: body.email,
+      password: body.password,
     },
   })
+
+  if (user.data) {
+    const session = await storage.extractSession(request)
+
+    session.state.set('context', {
+      token: user.data.token,
+    })
+
+    return redirect('/dashboard', {
+      headers: {
+        'Set-Cookie': await storage.commitSession(session.state),
+      },
+    })
+  }
+
+  return redirect('/identity/login')
 }
 
 const PageComponent: FC = () => {
