@@ -13,7 +13,7 @@ import {
 } from '@remix-run/node'
 
 import storage from '~/server/storage/session.server'
-import {viewEventFixture} from "~/fixtures";
+import { viewEventFixture } from '~/fixtures'
 
 export const meta: MetaFunction = () => {
   return [
