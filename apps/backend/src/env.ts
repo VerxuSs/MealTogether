@@ -25,6 +25,8 @@ const Schema = Type.Object(
     }),
     MY_JWT_SECRET: Type.String(),
 
+    MY_ARGON2_SECRET: Type.String(),
+
     MY_BACKEND_URL: Type.String({
       format: 'uri',
       default: 'http://127.0.0.1:3000',

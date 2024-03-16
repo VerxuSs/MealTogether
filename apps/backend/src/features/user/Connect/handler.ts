@@ -1,3 +1,5 @@
+import argon2 from 'argon2'
+
 import { Static } from '@sinclair/typebox'
 
 import { MyRoute, MySessionSchema } from '../../../fastify'
@@ -17,41 +19,50 @@ const Claims = (features: Record<string, { Claim: string }>) => {
   return Object.values(features).map(({ Claim }) => Claim)
 }
 
-export const Handler: MyRoute<Interface> = () => async (request, response) => {
-  const user = await prisma.user.findFirst({
-    where: {
-      email: request.body.email,
-    },
-    select: {
-      id: true,
-      password: true,
-    },
-  })
+export const Handler: MyRoute<Interface> =
+  (fastify) => async (request, response) => {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: request.body.email,
+      },
+      select: {
+        id: true,
+        password: true,
+      },
+    })
 
-  if (user === null) {
-    return response.unauthorized()
-  }
-
-  if (user.password === request.body.password) {
-    const payload: Static<typeof MySessionSchema> = {
-      user: user.id,
-      claims: [
-        ...Claims(Diet),
-        ...Claims(User),
-        ...Claims(Menu),
-        ...Claims(Dish),
-        ...Claims(Event),
-        ...Claims(Participant),
-      ],
+    if (user === null) {
+      return response.unauthorized()
     }
 
-    const token = await response.jwtSign(payload)
+    const authenticate = await argon2.verify(
+      user.password,
+      request.body.password,
+      {
+        secret: fastify.config.MY_ARGON2_SECRET,
+      },
+    )
 
-    return response.send({
-      id: user.id,
-      token: token,
-    })
+    if (authenticate) {
+      const payload: Static<typeof MySessionSchema> = {
+        user: user.id,
+        claims: [
+          ...Claims(Diet),
+          ...Claims(User),
+          ...Claims(Menu),
+          ...Claims(Dish),
+          ...Claims(Event),
+          ...Claims(Participant),
+        ],
+      }
+
+      const token = await response.jwtSign(payload)
+
+      return response.send({
+        id: user.id,
+        token: token,
+      })
+    }
+
+    return response.unauthorized()
   }
-
-  return response.unauthorized()
-}
