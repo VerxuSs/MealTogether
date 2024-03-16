@@ -224,7 +224,7 @@ const PageComponent: FC = () => {
 
   return (
     <>
-      <header className="m-10 w-full flex flex-row justify-center items-center">
+      <header className="my-10 w-full flex flex-row justify-center items-center">
         <h1 className="text-2xl mx-4">{title}</h1>
         <h2>{date}</h2>
       </header>

@@ -61,6 +61,9 @@ const PageComponent: FC = () => {
       title={<h1>Create an event</h1>}
       open={open}
       close={() => {
+        // create new event in backend,
+        // request event id from backend
+        // navigate to the update page with the newly created event id as get parameter
         navigate('../', {
           replace: true,
           relative: 'route',
@@ -71,8 +74,8 @@ const PageComponent: FC = () => {
         <Input type="text" name="name" placeholder="Name" />
         <Input type="number" name="participants" placeholder="Participants" />
         <div className="flex flex-col gap-y-3">
-          <Input type="text" name="date" placeholder="Date" />
-          <Input type="text" name="time" placeholder="Time" />
+          <Input type="date" name="date" placeholder="Date" />
+          <Input type="time" name="time" placeholder="Time" />
         </div>
         <Submit>Create</Submit>
       </Form>
