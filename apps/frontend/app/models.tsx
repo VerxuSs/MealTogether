@@ -8,7 +8,6 @@ class Ingredient {
   }
 }
 
-// Define class for dishes
 class Dish {
   id: number
   name: string
@@ -28,27 +27,36 @@ class Dish {
   }
 }
 
-// Define class for menus
 class Menu {
   id: number
   name: string
   description: string
   dishes: Dish[]
-  allergens: string[]
+  constraints: Constraint[]
 
   constructor(
     id: number,
     name: string,
     description: string,
     dishes: Dish[],
-    allergens: string[],
+    constraints: Constraint[],
   ) {
     this.id = id
     this.name = name
     this.description = description
     this.dishes = dishes
-    this.allergens = allergens
+    this.constraints = constraints
   }
 }
 
-export { Menu, Dish, Ingredient }
+class Constraint {
+  id: number
+  name: string
+  constructor(id: number, name: string) {
+    this.id = id
+    this.name = name
+  }
+}
+
+
+export { Menu, Dish, Ingredient, Constraint }
