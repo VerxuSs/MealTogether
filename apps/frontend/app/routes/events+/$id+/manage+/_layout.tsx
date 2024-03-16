@@ -16,7 +16,7 @@ import { Dish, Ingredient, Menu, Constraint } from '~/models'
 import {
   manageEventPageFixture,
   availableIngredientsFixture,
-  availableConstraintsFixture
+  availableConstraintsFixture,
 } from '~/fixtures'
 
 export const meta: MetaFunction = () => {
@@ -45,7 +45,9 @@ const PageComponent: FC = () => {
   const [openDishModal, setOpenDishModal] = useState(false)
   const [addDishMenuId, setAddDishMenuId] = useState(-1)
   const [newDishIngredients, setNewDishIngredients] = useState<Ingredient[]>([])
-  const [availableIngredients, setNewAvailableIngredients] = useState<Ingredient[]>(availableIngredientsFixture)
+  const [availableIngredients, setNewAvailableIngredients] = useState<
+    Ingredient[]
+  >(availableIngredientsFixture)
   const [newDishName, setNewDishName] = useState('')
   const [newDishDescription, setNewDishDescription] = useState('')
 
@@ -111,11 +113,10 @@ const PageComponent: FC = () => {
       })
     })
 
-    clearDishForm();
+    clearDishForm()
     setAddDishMenuId(-1)
     setOpenDishModal(false)
   }
-
 
   const deleteDishFromMenu = (menuId: number, dishId: number) => {
     // TODO: call backend to delete dish from menu
@@ -148,36 +149,35 @@ const PageComponent: FC = () => {
       ...prevIngredients,
       ingredient,
     ])
-    removeIngredientFromAvailableIngredients(ingredient);
+    removeIngredientFromAvailableIngredients(ingredient)
   }
 
   const addConstraintToMenu = (constraint: Constraint, menuId: number) => {
     // TODO: call backend to add constraint to menu
     // TODO: if response is 201 do the following
 
-
     setNewMenus((prevMenus) => {
-        return prevMenus.map((menu) => {
-            if (menu.id === menuId) {
-              // check if constraint is already in the menu
-                if (menu.constraints.includes(constraint)) {
-                    return menu
-                }
-                menu.constraints.push(constraint)
-            }
+      return prevMenus.map((menu) => {
+        if (menu.id === menuId) {
+          // check if constraint is already in the menu
+          if (menu.constraints.includes(constraint)) {
             return menu
-        })
+          }
+          menu.constraints.push(constraint)
+        }
+        return menu
+      })
     })
   }
 
   const removeConstraintFromMenu = (constraint: Constraint, menuId: number) => {
     setNewMenus((prevMenus) => {
-        return prevMenus.map((menu) => {
-            if (menu.id === menuId) {
-                menu.constraints = menu.constraints.filter((c) => c !== constraint)
-            }
-            return menu
-        })
+      return prevMenus.map((menu) => {
+        if (menu.id === menuId) {
+          menu.constraints = menu.constraints.filter((c) => c !== constraint)
+        }
+        return menu
+      })
     })
   }
 
@@ -226,23 +226,25 @@ const PageComponent: FC = () => {
                   </div>
                   <div className="flex flex-row justify-between w-full">
                     <Dropdown
-                        className="font-thin text-sm h-40 overflow-auto"
-                        label="add constraint"
-                        renderTrigger={() => (
-                            <span className="text-gray-400 mx-2 font-thin hover:cursor-pointer hover:text-black text-left">
-                              + add constraint
-                            </span>
-                        )}
+                      className="font-thin text-sm h-40 overflow-auto"
+                      label="add constraint"
+                      renderTrigger={() => (
+                        <span className="text-gray-400 mx-2 font-thin hover:cursor-pointer hover:text-black text-left">
+                          + add constraint
+                        </span>
+                      )}
                     >
                       {availableConstraintsFixture.map((constraint) => (
-                          <>
-                            <Dropdown.Item
-                                onClick={() => addConstraintToMenu(constraint, menu.id)}
-                                key={constraint.id}
-                            >
-                              {constraint.name}
-                            </Dropdown.Item>
-                          </>
+                        <>
+                          <Dropdown.Item
+                            onClick={() =>
+                              addConstraintToMenu(constraint, menu.id)
+                            }
+                            key={constraint.id}
+                          >
+                            {constraint.name}
+                          </Dropdown.Item>
+                        </>
                       ))}
                     </Dropdown>
                     <span
@@ -255,14 +257,19 @@ const PageComponent: FC = () => {
 
                   {menu.constraints.map((constraint) => {
                     return (
-                      <DietConstraint key={constraint.id} dietConstraint={constraint.name}>
+                      <DietConstraint
+                        key={constraint.id}
+                        dietConstraint={constraint.name}
+                      >
                         <FontAwesomeIcon icon={faWheatAlt} />
                         <span className={'opacity-100 font-thin mx-4 text-sm'}>
                           {constraint.name}
                         </span>
                         <div
-                            className="text-gray-400 hover:text-black hover:cursor-pointer font-thin text-xs"
-                            onClick={() => removeConstraintFromMenu(constraint, menu.id)}
+                          className="text-gray-400 hover:text-black hover:cursor-pointer font-thin text-xs"
+                          onClick={() =>
+                            removeConstraintFromMenu(constraint, menu.id)
+                          }
                         >
                           remove
                         </div>
@@ -324,9 +331,7 @@ const PageComponent: FC = () => {
         </div>
       </div>
       <Modal show={openDishModal} onClose={() => setOpenDishModal(false)}>
-        <Modal.Header>
-          Add dish to menu
-        </Modal.Header>
+        <Modal.Header>Add dish to menu</Modal.Header>
         <Modal.Body>
           <input
             className="w-full text-black text-2xl font-thin bg-transparent mb-3"
