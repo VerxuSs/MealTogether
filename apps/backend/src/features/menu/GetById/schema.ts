@@ -36,11 +36,17 @@ const Reply = Type.Object(
     ),
     dishes: Type.Array(
       Type.Object({
+        id: Type.Integer({
+          description: "The dish's id",
+        }),
         description: Type.Optional(
           Type.String({
             description: "The dish's description",
           }),
         ),
+        price: Type.Number({
+          description: "The ingredient's price",
+        }),
         name: Type.String({
           description: "The dish's name",
         }),
@@ -57,6 +63,9 @@ const Reply = Type.Object(
                 description: "The ingredient's description",
               }),
             ),
+            price: Type.Number({
+              description: "The ingredient's price",
+            }),
           }),
         ),
       }),

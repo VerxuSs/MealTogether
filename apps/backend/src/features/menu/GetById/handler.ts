@@ -38,6 +38,8 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
         include: {
           ingredients: {
             select: {
+              quantity: true,
+              unitPrice: true,
               ingredient: {
                 select: {
                   id: true,
@@ -59,13 +61,21 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
     diets: menu.diets,
     description: menu.description ?? undefined,
     dishes: menu.dishes.map((dish) => ({
+      id: dish.id,
       name: dish.name,
       description: dish.description ?? undefined,
-      ingredients: dish.ingredients.map(({ ingredient }) => ({
-        id: ingredient.id,
-        name: ingredient.name,
-        description: ingredient.description ?? undefined,
-      })),
+      ingredients: dish.ingredients.map(
+        ({ ingredient, quantity, unitPrice }) => ({
+          id: ingredient.id,
+          name: ingredient.name,
+          price: quantity * unitPrice,
+          description: ingredient.description ?? undefined,
+        }),
+      ),
+      price: dish.ingredients.reduce(
+        (price, { quantity, unitPrice }) => price + quantity * unitPrice,
+        0,
+      ),
     })),
   })
 }
