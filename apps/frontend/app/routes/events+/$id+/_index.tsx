@@ -91,7 +91,10 @@ const PageComponent: FC = () => {
                   </div>
                   {menu.constraints.map((constraint) => {
                     return (
-                      <DietConstraint key={constraint.id} dietConstraint={constraint.name}>
+                      <DietConstraint
+                        key={constraint.id}
+                        dietConstraint={constraint.name}
+                      >
                         <FontAwesomeIcon icon={faWheatAlt} />
                         <span className={'opacity-100 font-thin mx-4 text-sm'}>
                           {constraint.name}
