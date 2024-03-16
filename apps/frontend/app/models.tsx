@@ -58,5 +58,4 @@ class Constraint {
   }
 }
 
-
 export { Menu, Dish, Ingredient, Constraint }
