@@ -1,18 +1,19 @@
 import { FastifySchema, RouteGenericInterface } from 'fastify'
 import { Static, Type } from '@sinclair/typebox'
 
-const DietType = Type.Object({
-  id: Type.Integer({
-    description: "id's of the diet",
+const Reply = Type.Array(
+  Type.Object({
+    id: Type.Integer({
+      description: 'id of the diet',
+    }),
+    name: Type.String({
+      description: 'name of diet',
+    }),
   }),
-  name: Type.String({
-    description: "name's of diet",
-  }),
-})
-
-const Reply = Type.Array(DietType, {
-  description: 'Array of the diets of user',
-})
+  {
+    description: 'Array of the diets linked to the user',
+  },
+)
 
 export interface Interface extends RouteGenericInterface {
   Reply: Static<typeof Reply>
@@ -20,7 +21,7 @@ export interface Interface extends RouteGenericInterface {
 
 export const Schema: FastifySchema = {
   tags: ['diet'],
-  description: 'Get all diet of user',
+  description: "Get the user's linked diets",
   security: [{ bearerAuth: [] }],
   response: {
     200: Reply,

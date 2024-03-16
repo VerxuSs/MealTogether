@@ -4,8 +4,8 @@ import { Static, Type } from '@sinclair/typebox'
 const Params = Type.Object(
   {
     dietId: Type.Integer({
-      description: "id's of the diet",
-      minimum: 1,
+      description: "diet's id to remove",
+      minLength: 1,
     }),
   },
   {
@@ -19,7 +19,7 @@ export interface Interface extends RouteGenericInterface {
 
 export const Schema: FastifySchema = {
   tags: ['diet'],
-  description: 'Link a diet for the user',
-  params: Params,
+  description: "Unlink a diet from the user's account",
   security: [{ bearerAuth: [] }],
+  params: Params,
 }

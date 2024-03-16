@@ -1,24 +1,16 @@
 import { FastifyInstance } from 'fastify'
 
-import User from '../features/user'
+import Diet from '../features/diet'
 
 const route = async (fastify: FastifyInstance) => {
-  fastify.get(
-    '/linked',
-    User.GetAllDiet.Shorthand,
-    User.GetAllDiet.Route(fastify),
-  )
+  fastify.get('/linked', Diet.Linked.Shorthand, Diet.Linked.Route(fastify))
 
-  fastify.post(
-    '/:dietId/link',
-    User.LinkDiet.Shorthand,
-    User.LinkDiet.Route(fastify),
-  )
+  fastify.post('/:dietId/link', Diet.Link.Shorthand, Diet.Link.Route(fastify))
 
   fastify.delete(
     '/:dietId/unlink',
-    User.UnlinkDiet.Shorthand,
-    User.UnlinkDiet.Route(fastify),
+    Diet.Unlink.Shorthand,
+    Diet.Unlink.Route(fastify),
   )
 }
 
