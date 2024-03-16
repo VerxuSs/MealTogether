@@ -89,12 +89,12 @@ const PageComponent: FC = () => {
                       ))}
                     </article>
                   </div>
-                  {menu.allergens.map((allergen) => {
+                  {menu.constraints.map((constraint) => {
                     return (
-                      <DietConstraint key={allergen} dietConstraint={allergen}>
+                      <DietConstraint key={constraint.id} dietConstraint={constraint.name}>
                         <FontAwesomeIcon icon={faWheatAlt} />
                         <span className={'opacity-100 font-thin mx-4 text-sm'}>
-                          {allergen}
+                          {constraint.name}
                         </span>
                       </DietConstraint>
                     )
