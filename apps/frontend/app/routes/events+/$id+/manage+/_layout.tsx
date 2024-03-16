@@ -6,14 +6,14 @@ import {
   type MetaFunction,
 } from '@remix-run/node'
 
-import {useLoaderData} from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
 import DietConstraint from '~/shared/DietConstraintInMenu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWheatAlt } from '@fortawesome/free-solid-svg-icons'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import {Dropdown, Modal} from 'flowbite-react';
-import {Dish, Ingredient, Menu} from '~/models'
-import {manageEventPageFixture, availableIngredientsFixture} from "~/fixtures";
+import { Dropdown, Modal } from 'flowbite-react'
+import { Dish, Ingredient, Menu } from '~/models'
+import { manageEventPageFixture, availableIngredientsFixture } from '~/fixtures'
 
 export const meta: MetaFunction = () => {
   return [
@@ -38,13 +38,12 @@ const PageComponent: FC = () => {
   const [newMenuName, setNewMenuName] = useState('')
   const [newMenus, setNewMenus] = useState<Menu[]>(menus) // Initialize newMenus state as an empty array
   const [newMenuDescription, setNewMenuDescription] = useState('')
-  const [openDishModal, setOpenDishModal] = useState(false);
-  const [addDishMenuId, setAddDishMenuId] = useState(-1);
+  const [openDishModal, setOpenDishModal] = useState(false)
+  const [addDishMenuId, setAddDishMenuId] = useState(-1)
   const [newDishIngredients, setNewDishIngredients] = useState<Ingredient[]>([])
   // const [availableIngredients, setNewAvailableIngredients] = useState<Ingredient[]>(availableIngredientsFixture)
   const [newDishName, setNewDishName] = useState('')
   const [newDishDescription, setNewDishDescription] = useState('')
-
 
   /**
    * handles new menu creation
@@ -78,46 +77,51 @@ const PageComponent: FC = () => {
   }
 
   const handleAddDishToMenuModalOpen = (menuId: number) => {
-    setAddDishMenuId(menuId);
-    setOpenDishModal(true);
+    setAddDishMenuId(menuId)
+    setOpenDishModal(true)
   }
 
   const handleAddDishToMenuModalClose = (closedWithSubmit: boolean) => {
-
     if (!closedWithSubmit) {
-      setOpenDishModal(false);
-      return;
+      setOpenDishModal(false)
+      return
     }
 
     // TODO: call backend to add dish to menu (id = addDishMenuId)
     // TODO: if response in range 200-300 do the following
 
-    const newDishId = Math.random() * 100000;
-    const newDish = new Dish(newDishId, newDishName, newDishDescription, newDishIngredients);
+    const newDishId = Math.random() * 100000
+    const newDish = new Dish(
+      newDishId,
+      newDishName,
+      newDishDescription,
+      newDishIngredients,
+    )
 
     setNewMenus((prevMenus) => {
       return prevMenus.map((menu) => {
         if (menu.id === addDishMenuId) {
-          menu.dishes.push(newDish);
+          menu.dishes.push(newDish)
         }
-        return menu;
-      });
-    });
+        return menu
+      })
+    })
 
-
-    setAddDishMenuId(-1);
-    setOpenDishModal(false);
+    setAddDishMenuId(-1)
+    setOpenDishModal(false)
   }
 
-
   const clearDishForm = () => {
-    setNewDishDescription('');
-    setNewDishName('');
-    setNewDishIngredients([]);
+    setNewDishDescription('')
+    setNewDishName('')
+    setNewDishIngredients([])
   }
 
   const addIngredientToDish = (ingredient: Ingredient) => {
-    setNewDishIngredients((prevIngredients: Ingredient[]) => [...prevIngredients, ingredient]);
+    setNewDishIngredients((prevIngredients: Ingredient[]) => [
+      ...prevIngredients,
+      ingredient,
+    ])
   }
 
   return (
@@ -167,8 +171,9 @@ const PageComponent: FC = () => {
                       {' '}
                       + add constraint
                     </span>
-                    <span className="text-gray-400 font-thin mx-2 hover:cursor-pointer hover:text-black"
-                          onClick={() => handleAddDishToMenuModalOpen(menu.id)}
+                    <span
+                      className="text-gray-400 font-thin mx-2 hover:cursor-pointer hover:text-black"
+                      onClick={() => handleAddDishToMenuModalOpen(menu.id)}
                     >
                       + add dish
                     </span>
@@ -241,74 +246,73 @@ const PageComponent: FC = () => {
       <Modal show={openDishModal} onClose={() => setOpenDishModal(false)}>
         <Modal.Body>
           <input
-              className="w-full text-black text-2xl font-thin bg-transparent mb-3"
-              placeholder="name"
-              value={newDishName}
-              onChange={($event) => setNewDishName($event.target.value)}
+            className="w-full text-black text-2xl font-thin bg-transparent mb-3"
+            placeholder="name"
+            value={newDishName}
+            onChange={($event) => setNewDishName($event.target.value)}
           ></input>
           <input
-              className="w-full text-black text-sm font-thin bg-transparent mb-3"
-              placeholder="description"
-              value={newDishDescription}
-              onChange={($event) => setNewDishDescription($event.target.value)}
+            className="w-full text-black text-sm font-thin bg-transparent mb-3"
+            placeholder="description"
+            value={newDishDescription}
+            onChange={($event) => setNewDishDescription($event.target.value)}
           ></input>
           {newDishIngredients.map((ingredient) => {
             return (
-                <div>
-                  <div key={ingredient.id}>
-                    <FontAwesomeIcon icon={faWheatAlt} />
-                    <span
-                        className={'opacity-100 font-thin mx-4 text-sm'}
-                    >
-                      {ingredient.name}
-                    </span>
-                  </div>
+              <div>
+                <div key={ingredient.id}>
+                  <FontAwesomeIcon icon={faWheatAlt} />
+                  <span className={'opacity-100 font-thin mx-4 text-sm'}>
+                    {ingredient.name}
+                  </span>
                 </div>
+              </div>
             )
           })}
           <div className="mt-5"></div>
           <Dropdown
-              className="font-thin text-sm h-40 overflow-auto"
-              label="Add ingredient"
-              renderTrigger={() => <span
-                  className="text-gray-400 hover:text-black hover:cursor-pointer font-thin">
+            className="font-thin text-sm h-40 overflow-auto"
+            label="Add ingredient"
+            renderTrigger={() => (
+              <span className="text-gray-400 hover:text-black hover:cursor-pointer font-thin">
                 + Add ingredient
               </span>
-          }>
+            )}
+          >
             {availableIngredientsFixture.map((ingredient) => (
-                <>
-                  <Dropdown.Item
-                      onClick={() => addIngredientToDish(ingredient)}
-                      key={ingredient.id}
-                  >
-                    {ingredient.name}
-                  </Dropdown.Item>
-                </>
+              <>
+                <Dropdown.Item
+                  onClick={() => addIngredientToDish(ingredient)}
+                  key={ingredient.id}
+                >
+                  {ingredient.name}
+                </Dropdown.Item>
+              </>
             ))}
           </Dropdown>
         </Modal.Body>
         <Modal.Footer>
           <button
-              className="my-4 p-1 bg-[#0e1729] text-white font-thin w-40 text-sm hover:opacity-75"
-              onClick={() => {
-                handleAddDishToMenuModalClose(true)
-              }}
+            className="my-4 p-1 bg-[#0e1729] text-white font-thin w-40 text-sm hover:opacity-75"
+            onClick={() => {
+              handleAddDishToMenuModalClose(true)
+            }}
           >
             Submit
           </button>
           <button
-              className="my-4 p-1 bg-gray-200 text-black font-thin w-40 text-sm hover:bg-gray-300"
-              onClick={() => {
-                handleAddDishToMenuModalClose(false)
-              }}
+            className="my-4 p-1 bg-gray-200 text-black font-thin w-40 text-sm hover:bg-gray-300"
+            onClick={() => {
+              handleAddDishToMenuModalClose(false)
+            }}
           >
             Close
           </button>
           <button
-              className="p-1 text-gray-400 font-thin w-20 text-sm hover:text-black"
-              onClick={() => {
-                clearDishForm()
-              }}
+            className="p-1 text-gray-400 font-thin w-20 text-sm hover:text-black"
+            onClick={() => {
+              clearDishForm()
+            }}
           >
             Clear
           </button>
