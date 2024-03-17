@@ -18,6 +18,7 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
     select: {
       slots: true,
       status: true,
+      endDate: true,
       authorId: true,
       _count: {
         select: {
@@ -29,16 +30,21 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
 
   if (event === null) return response.notFound()
 
-  if (event.authorId === identity.user) return response.unauthorized()
+  if (event.authorId === identity.user)
+    return response.unauthorized("You're the author of the event")
 
   if (
     event.status === EventStatus.CLOSED ||
     event.status === EventStatus.CANCELED
   ) {
-    return response.unauthorized()
+    return response.unauthorized("Event's status is not open")
   }
 
-  if (event._count.participants === event.slots) return response.badRequest()
+  if (event.endDate.getTime() < Date.now())
+    return response.unauthorized("Event's date is passed")
+
+  if (event._count.participants === event.slots)
+    return response.unauthorized("Event's slots are full")
 
   await prisma.participant.create({
     data: {
