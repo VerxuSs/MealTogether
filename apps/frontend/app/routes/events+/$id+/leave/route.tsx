@@ -1,8 +1,12 @@
 import { type FC } from 'react'
 
-import { useFetcher, redirect } from '@remix-run/react'
+import { useFetcher, useNavigate } from '@remix-run/react'
 
-import { type ActionFunctionArgs, type MetaFunction } from '@remix-run/node'
+import {
+  type ActionFunctionArgs,
+  type MetaFunction,
+  redirect,
+} from '@remix-run/node'
 
 import { Modal } from 'flowbite-react'
 
@@ -42,8 +46,17 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 const PageComponent: FC = () => {
   const fetcher = useFetcher<typeof action>()
 
+  const navigate = useNavigate()
+
   return (
-    <Modal show>
+    <Modal
+      show
+      onClose={() => {
+        navigate('../', {
+          replace: true,
+        })
+      }}
+    >
       <Modal.Header>Are you sure to leave the event?</Modal.Header>
       <Modal.Body>
         <fetcher.Form method="POST" className="flex gap-x-4">
