@@ -83,6 +83,10 @@ export interface paths {
             readonly name: string
             /** @description The event's maximum participant */
             readonly slots: number
+            /** @description The event's start date in UNIX timestamp format (milliseconds) */
+            readonly startDate: number
+            /** @description The event's end date in UNIX timestamp format (milliseconds) */
+            readonly endDate: number
           }
         }
       }
@@ -111,13 +115,12 @@ export interface paths {
               id: number
               /** @description name of event */
               name: string
+              /** @description start date of the event */
+              startDate: number
               /** @description number of maximum participants */
               slots: number
-              /** @description array of participants attending the event */
-              participants: {
-                /** @description id of the participant */
-                userId: number
-              }[]
+              /** @description number of participants */
+              participants: number
             }[]
           }
         }
@@ -136,15 +139,14 @@ export interface paths {
               id: number
               /** @description name of event */
               name: string
-              /** @description number of maximum participants */
-              slots: number
               /** @description id of the author */
               authorId: number
-              /** @description array of participants attending the event */
-              participants: {
-                /** @description id of the participant */
-                userId: number
-              }[]
+              /** @description start date of the event */
+              startDate: number
+              /** @description number of maximum participants */
+              slots: number
+              /** @description number of participants */
+              participants: number
             }[]
           }
         }

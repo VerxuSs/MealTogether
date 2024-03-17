@@ -19,13 +19,22 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
       id: true,
       name: true,
       slots: true,
-      participants: {
+      startDate: true,
+      _count: {
         select: {
-          userId: true,
+          participants: true,
         },
       },
     },
   })
 
-  return response.send(events)
+  return response.send(
+    events.map((event) => ({
+      id: event.id,
+      name: event.name,
+      slots: event.slots,
+      startDate: event.startDate.getTime(),
+      participants: event._count.participants,
+    })),
+  )
 }

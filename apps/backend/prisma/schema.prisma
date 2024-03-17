@@ -24,8 +24,9 @@ model Event {
   slots Int @default(1)
 
   status EventStatus @default(OPENED)
-  // startDate        DateTime
-  // endDate          DateTime
+
+  startDate DateTime
+  endDate   DateTime
 
   authorId Int
   author   User @relation(fields: [authorId], references: [id])

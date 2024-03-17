@@ -17,15 +17,25 @@ const Reply = Type.Object(
       minimum: 1,
       maximum: 30,
     }),
-    // startDate: Type.String(), // Adjust the type if needed
-    // endDate: Type.String(), // Adjust the type if needed
+    startDate: Type.Number({
+      description: 'start date of the event',
+    }),
+    endDate: Type.Number({
+      description: 'end date of the event',
+    }),
     authorId: Type.Number({
       description: 'id of the author',
       minimum: 0,
     }),
-    // participants: Type.Array(Participant, {
-    //   description: "Participant's array of the event",
-    // }),
+    participants: Type.Array(
+      Type.Number({
+        description: 'id of the participant',
+        minimum: 0,
+      }),
+      {
+        description: 'array of participants attending the event',
+      },
+    ),
   },
   {
     readOnly: true,

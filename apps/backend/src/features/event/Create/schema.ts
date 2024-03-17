@@ -11,13 +11,19 @@ const Body = Type.Object(
     }),
     slots: Type.Number({
       description: "The event's maximum participant",
+      minimum: 1,
+      maximum: 30,
     }),
-    // startDate: Type.Date({
-    //   description: "The event's start date",
-    // }),
-    // endDate: Type.Date({
-    //   description: "The event's end date",
-    // }),
+    startDate: Type.Number({
+      description:
+        "The event's start date in UNIX timestamp format (milliseconds)",
+      minimum: new Date().getTime(),
+    }),
+    endDate: Type.Number({
+      description:
+        "The event's end date in UNIX timestamp format (milliseconds)",
+      exclusiveMinimum: new Date().getTime(),
+    }),
   },
   {
     readOnly: true,

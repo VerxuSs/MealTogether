@@ -50,7 +50,7 @@ const PageComponent: FC = () => {
             <h2 className="text-xl mb-3">Hosting</h2>
             <ul className="list-none">
               {data.hosting.map((event) => {
-                const spots = event.slots - event.participants.cur
+                const spots = event.slots - event.participants
 
                 return (
                   <li
@@ -64,7 +64,7 @@ const PageComponent: FC = () => {
                       <h1 className="font-bold">{event.name}</h1>
                       <h2 className="font-serif">{spots} spots remaining</h2>
                     </div>
-                    <span>{event.date}</span>
+                    <span>{new Date(event.startDate).toDateString()}</span>
                   </li>
                 )
               })}
@@ -81,7 +81,7 @@ const PageComponent: FC = () => {
             <h2 className="text-xl mb-3">Attending</h2>
             <ul className="list-none">
               {data.attending.map((event) => {
-                const spots = event.participants.max - event.participants.cur
+                const spots = event.slots - event.participants
 
                 return (
                   <li
@@ -95,7 +95,7 @@ const PageComponent: FC = () => {
                       <h1 className="font-bold">{event.name}</h1>
                       <h2 className="font-serif">{spots} spots remaining</h2>
                     </div>
-                    <span>{event.date}</span>
+                    <span>{new Date(event.startDate).toDateString()}</span>
                   </li>
                 )
               })}

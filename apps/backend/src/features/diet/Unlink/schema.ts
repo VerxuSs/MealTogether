@@ -5,7 +5,7 @@ const Params = Type.Object(
   {
     dietId: Type.Integer({
       description: "diet's id to remove",
-      minLength: 1,
+      minimum: 1,
     }),
   },
   {

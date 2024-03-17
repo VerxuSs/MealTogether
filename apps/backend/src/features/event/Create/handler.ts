@@ -11,8 +11,8 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
     data: {
       name: request.body.name,
       slots: request.body.slots,
-      // startDate: request.body.startDate,
-      // endDate: request.body.endDate,
+      endDate: new Date(request.body.endDate),
+      startDate: new Date(request.body.startDate),
       author: {
         connect: {
           id: identity.user,
