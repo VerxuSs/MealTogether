@@ -9,7 +9,7 @@ const Body = Type.Object(
       minLength: 3,
       maxLength: 20,
     }),
-    nbParticipantMax: Type.Number({
+    slots: Type.Number({
       description: "The event's maximum participant",
     }),
     // startDate: Type.Date({

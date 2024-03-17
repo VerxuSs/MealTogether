@@ -34,7 +34,7 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
     //participants: wishEvent.participants,
     id: wishEvent.id,
     name: wishEvent.name,
-    nbParticipantMax: wishEvent.nbParticipantMax,
+    slots: wishEvent.slots,
     authorId: wishEvent.authorId,
   })
 }

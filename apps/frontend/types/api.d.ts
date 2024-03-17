@@ -82,7 +82,7 @@ export interface paths {
             /** @description The event's name */
             readonly name: string
             /** @description The event's maximum participant */
-            readonly nbParticipantMax: number
+            readonly slots: number
           }
         }
       }
@@ -111,7 +111,13 @@ export interface paths {
               id: number
               /** @description name of event */
               name: string
-              nbParticipantMax: number
+              /** @description number of maximum participants */
+              slots: number
+              /** @description array of participants attending the event */
+              participants: {
+                /** @description id of the participant */
+                userId: number
+              }[]
             }[]
           }
         }
@@ -130,9 +136,15 @@ export interface paths {
               id: number
               /** @description name of event */
               name: string
-              nbParticipantMax: number
+              /** @description number of maximum participants */
+              slots: number
               /** @description id of the author */
               authorId: number
+              /** @description array of participants attending the event */
+              participants: {
+                /** @description id of the participant */
+                userId: number
+              }[]
             }[]
           }
         }

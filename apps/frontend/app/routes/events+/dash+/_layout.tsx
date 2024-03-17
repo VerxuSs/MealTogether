@@ -10,72 +10,28 @@ import {
   useNavigate,
 } from '@remix-run/react'
 
+import { apiClient } from '~/client/api'
+
 import storage from '~/server/storage/session.server'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await storage.extractSession(request)
 
-  void session // TODO: get events
+  const hosting = await apiClient(request).GET('/events/hosting', {
+    headers: {
+      Authorization: `Bearer ${session.requireValue('context').token}`,
+    },
+  })
+
+  const attending = await apiClient(request).GET('/events/attending', {
+    headers: {
+      Authorization: `Bearer ${session.requireValue('context').token}`,
+    },
+  })
 
   return json({
-    hosting: [
-      {
-        id: 0,
-        name: 'Event 1',
-        date: '2022-01-01',
-        participants: {
-          cur: 10,
-          max: 20,
-        },
-      },
-      {
-        id: 1,
-        name: 'Event 2',
-        date: '2022-01-02',
-        participants: {
-          cur: 10,
-          max: 20,
-        },
-      },
-    ],
-    attending: [
-      {
-        id: 2,
-        name: 'Event 3',
-        date: '2022-01-03',
-        participants: {
-          cur: 10,
-          max: 20,
-        },
-      },
-      {
-        id: 3,
-        name: 'Event 4',
-        date: '2022-01-04',
-        participants: {
-          cur: 10,
-          max: 20,
-        },
-      },
-      {
-        id: 4,
-        name: 'Event 5',
-        date: '2022-01-05',
-        participants: {
-          cur: 10,
-          max: 20,
-        },
-      },
-      {
-        id: 5,
-        name: 'Event 6',
-        date: '2022-01-06',
-        participants: {
-          cur: 10,
-          max: 20,
-        },
-      },
-    ],
+    hosting: hosting.data ?? [],
+    attending: attending.data ?? [],
   })
 }
 
@@ -94,7 +50,7 @@ const PageComponent: FC = () => {
             <h2 className="text-xl mb-3">Hosting</h2>
             <ul className="list-none">
               {data.hosting.map((event) => {
-                const spots = event.participants.max - event.participants.cur
+                const spots = event.slots - event.participants.cur
 
                 return (
                   <li

@@ -12,7 +12,8 @@ const Event = Type.Object({
     minLength: 3,
     maxLength: 20,
   }),
-  nbParticipantMax: Type.Number({
+  slots: Type.Number({
+    description: 'number of maximum participants',
     minimum: 1,
     maximum: 30,
   }),
@@ -22,6 +23,17 @@ const Event = Type.Object({
     description: 'id of the author',
     minimum: 0,
   }),
+  participants: Type.Array(
+    Type.Object({
+      userId: Type.Number({
+        description: 'id of the participant',
+        minimum: 0,
+      }),
+    }),
+    {
+      description: 'array of participants attending the event',
+    },
+  ),
 })
 
 const Reply = Type.Array(Event, {

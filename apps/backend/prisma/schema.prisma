@@ -21,7 +21,7 @@ model Event {
 
   name String @unique
 
-  nbParticipantMax Int @default(1)
+  slots Int @default(1)
 
   status EventStatus @default(OPENED)
   // startDate        DateTime

@@ -18,7 +18,12 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
     select: {
       id: true,
       name: true,
-      nbParticipantMax: true,
+      slots: true,
+      participants: {
+        select: {
+          userId: true,
+        },
+      },
     },
   })
 

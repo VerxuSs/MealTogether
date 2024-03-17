@@ -7,17 +7,29 @@ const Event = Type.Object({
     description: 'id of event',
     minimum: 0,
   }),
+  // startDate: Type.String(), // Adjust the type if needed
+  // endDate: Type.String(), // Adjust the type if needed
   name: Type.String({
     description: 'name of event',
     minLength: 3,
     maxLength: 20,
   }),
-  nbParticipantMax: Type.Number({
+  slots: Type.Number({
+    description: 'number of maximum participants',
     minimum: 1,
     maximum: 30,
   }),
-  // startDate: Type.String(), // Adjust the type if needed
-  // endDate: Type.String(), // Adjust the type if needed
+  participants: Type.Array(
+    Type.Object({
+      userId: Type.Number({
+        description: 'id of the participant',
+        minimum: 0,
+      }),
+    }),
+    {
+      description: 'array of participants attending the event',
+    },
+  ),
 })
 
 const Reply = Type.Array(Event, {

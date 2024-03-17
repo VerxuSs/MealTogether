@@ -13,7 +13,7 @@ const Reply = Type.Object(
       minLength: 3,
       maxLength: 20,
     }),
-    nbParticipantMax: Type.Number({
+    slots: Type.Number({
       minimum: 1,
       maximum: 30,
     }),
