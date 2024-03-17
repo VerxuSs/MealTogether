@@ -1,6 +1,6 @@
 import { useState, type FC, useEffect, type PropsWithChildren } from 'react'
 
-import { useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
 
 import {
   json,
@@ -93,17 +93,21 @@ const PageComponent: FC = () => {
     setSelection(choice)
   }, [choice])
 
+  const menu = menus.find((menu) => menu.id === selection)
+
   return (
     <>
       <header className="my-10 w-full flex flex-row justify-center items-center">
         <h1 className="text-2xl mx-4">{event.name}</h1>
         <h2>{event.startDate}</h2>
+        <Link to={`/events/${event.id}/leave`}>Leave</Link>
       </header>
       <div className="px-3 w-full flex flex-row justify-center">
         <div>
           <div className="grid gap-2 sm:grid-cols-1 lg:grid-cols-2 max-w-2xl m-1">
             {menus.map((menu) => {
               const selected = menu.id === selection
+
               return (
                 <div key={menu.id}>
                   <div
@@ -156,51 +160,44 @@ const PageComponent: FC = () => {
           </div>
         </div>
         <div className="w-80 flex flex-col justify-start items-center mx-10">
-          {menus.map((menu) => {
-            if (menu.id !== selection) {
-              return
-            }
-            return (
-              <div key={menu.id}>
-                <div className="text-2xl my-2">{menu.name}</div>
-                <div>{menu.description}</div>
-                {menu.dishes?.map((dish) => (
-                  <>
-                    <div className="flex flex-col justify-center w-80 my-3">
-                      <div className="flex flex-row justify-start items-center">
-                        <span className="text-black font-thin text-lg">
-                          {dish.name}
-                        </span>
-                      </div>
-                      <div className="flex flex-row justify-start items-center">
-                        <span className="text-black font-thin text-xs">
-                          {dish.description}
-                        </span>
-                      </div>
+          {menu && (
+            <div>
+              <div className="text-2xl my-2">{menu.name}</div>
+              <div>{menu.description}</div>
+              {menu.dishes?.map((dish) => (
+                <>
+                  <div className="flex flex-col justify-center w-80 my-3">
+                    <div className="flex flex-row justify-start items-center">
+                      <span className="text-black font-thin text-lg">
+                        {dish.name}
+                      </span>
                     </div>
+                    <div className="flex flex-row justify-start items-center">
+                      <span className="text-black font-thin text-xs">
+                        {dish.description}
+                      </span>
+                    </div>
+                  </div>
 
-                    {dish.ingredients.map((ingredient) => {
-                      return (
-                        <div key={ingredient.id}>
-                          <FontAwesomeIcon icon={faWheatAlt} />
-                          <span
-                            className={'opacity-100 font-thin mx-4 text-sm'}
-                          >
-                            {ingredient.name}
-                          </span>
-                        </div>
-                      )
-                    })}
-                  </>
-                ))}
-                <div className="w-full flex flex-row justify-start my-10">
-                  <button className="p-1 bg-[#0e1729] text-white font-thin w-52 text-sm hover:opacity-75">
-                    Submit
-                  </button>
-                </div>
+                  {dish.ingredients.map((ingredient) => {
+                    return (
+                      <div key={ingredient.id}>
+                        <FontAwesomeIcon icon={faWheatAlt} />
+                        <span className={'opacity-100 font-thin mx-4 text-sm'}>
+                          {ingredient.name}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </>
+              ))}
+              <div className="w-full flex flex-row justify-start my-10">
+                <button className="p-1 bg-[#0e1729] text-white font-thin w-52 text-sm hover:opacity-75">
+                  Submit
+                </button>
               </div>
-            )
-          })}
+            </div>
+          )}
         </div>
       </div>
     </>
