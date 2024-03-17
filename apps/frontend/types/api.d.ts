@@ -103,6 +103,46 @@ export interface paths {
       }
     }
   }
+  '/events/{eventId}': {
+    /** @description get one event */
+    get: {
+      parameters: {
+        path: {
+          /** @description event's id that the user want to display */
+          eventId: number
+        }
+      }
+      responses: {
+        /** @description Default Response */
+        200: {
+          content: {
+            'application/json': {
+              /** @description id of event */
+              readonly id: number
+              /** @description name of event */
+              readonly name: string
+              readonly slots: number
+              /** @description start date of the event */
+              readonly startDate: number
+              /** @description end date of the event */
+              readonly endDate: number
+              /** @description id of the author */
+              readonly authorId: number
+              /** @description array of participants attending the event */
+              readonly participants: number[]
+              /** @description array of menus for the event */
+              readonly menus: {
+                /** @description id of the menu */
+                id: number
+                /** @description name of the menu */
+                name: string
+              }[]
+            }
+          }
+        }
+      }
+    }
+  }
   '/events/hosting': {
     /** @description get all events of the connected user */
     get: {
@@ -154,6 +194,26 @@ export interface paths {
     }
   }
   '/events/{eventId}/menu': {
+    /** @description Get the event's menu */
+    get: {
+      parameters: {
+        path: {
+          /** @description The event's id */
+          eventId: number
+        }
+      }
+      responses: {
+        /** @description Default Response */
+        200: {
+          content: {
+            'application/json': {
+              /** @description The menu's id */
+              readonly id?: number
+            }
+          }
+        }
+      }
+    }
     /** @description Create a menu */
     post: {
       parameters: {
@@ -240,6 +300,24 @@ export interface paths {
         /** @description Default Response */
         200: {
           content: never
+        }
+      }
+    }
+  }
+  '/ingredients': {
+    /** @description Get all of the ingredients */
+    get: {
+      responses: {
+        /** @description Default Response */
+        200: {
+          content: {
+            'application/json': {
+              /** @description The ingredient's id */
+              id: number
+              /** @description The ingredient's name */
+              name: string
+            }[]
+          }
         }
       }
     }

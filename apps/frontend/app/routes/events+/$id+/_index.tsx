@@ -1,8 +1,4 @@
 import { useState, type FC, useEffect, type PropsWithChildren } from 'react'
-import { Tooltip } from 'flowbite-react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faWheatAlt } from '@fortawesome/free-solid-svg-icons'
-import MenuTooltipIcon from '~/shared/MenuTooltipIcon'
 
 import { useLoaderData } from '@remix-run/react'
 
@@ -12,8 +8,16 @@ import {
   type MetaFunction,
 } from '@remix-run/node'
 
+import { Tooltip } from 'flowbite-react'
+
+import { faWheatAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import MenuTooltipIcon from '~/shared/MenuTooltipIcon'
+
 import storage from '~/server/storage/session.server'
-import { viewEventFixture } from '~/fixtures'
+
+import { apiClient } from '~/client/api'
 
 export const meta: MetaFunction = () => {
   return [
@@ -28,25 +32,72 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   const session = await storage.extractSession(request)
 
-  void session // TODO: get event
+  const eventId = +params.id
 
-  return json(viewEventFixture)
+  const token = session.requireValue('context').token
+
+  const event = await apiClient(request).GET('/events/{eventId}', {
+    params: {
+      path: {
+        eventId,
+      },
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  const choice = await apiClient(request).GET('/events/{eventId}/menu', {
+    params: {
+      path: {
+        eventId,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  })
+
+  if (event.data) {
+    const menus = event.data.menus.map(async ({ id }) => {
+      const { data } = await apiClient(request).GET('/menus/{menuId}', {
+        params: {
+          path: {
+            menuId: id,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      })
+
+      return { id, ...data }
+    })
+
+    return json({
+      event: event.data,
+      choice: choice.data,
+      menus: (await Promise.all(menus)).filter(Boolean),
+    })
+  }
+
+  throw new Error()
 }
 
 const PageComponent: FC = () => {
-  const { title, choice, date, menus } = useLoaderData<typeof loader>()
+  const { event, choice, menus } = useLoaderData<typeof loader>()
 
-  const [selection, setSelection] = useState(choice.dish)
+  const [selection, setSelection] = useState(choice)
 
   useEffect(() => {
-    setSelection(choice.dish)
-  }, [choice.dish])
+    setSelection(choice)
+  }, [choice])
 
   return (
     <>
       <header className="my-10 w-full flex flex-row justify-center items-center">
-        <h1 className="text-2xl mx-4">{title}</h1>
-        <h2>{date}</h2>
+        <h1 className="text-2xl mx-4">{event.name}</h1>
+        <h2>{event.startDate}</h2>
       </header>
       <div className="px-3 w-full flex flex-row justify-center">
         <div>
@@ -77,7 +128,7 @@ const PageComponent: FC = () => {
                           <MenuTooltipIcon />
                         </div>
                       </Tooltip>
-                      {menu.dishes.map((dish) => (
+                      {menu.dishes?.map((dish) => (
                         <div
                           key={dish.id}
                           className="border border-black h-10 w-80 border-t-0 flex flex-row justify-center items-center m-0 p-0"
@@ -89,15 +140,12 @@ const PageComponent: FC = () => {
                       ))}
                     </article>
                   </div>
-                  {menu.constraints.map((constraint) => {
+                  {menu.diets?.map((diet) => {
                     return (
-                      <DietConstraint
-                        key={constraint.id}
-                        dietConstraint={constraint.name}
-                      >
+                      <DietConstraint key={diet.id} dietConstraint={diet.name}>
                         <FontAwesomeIcon icon={faWheatAlt} />
                         <span className={'opacity-100 font-thin mx-4 text-sm'}>
-                          {constraint.name}
+                          {diet.name}
                         </span>
                       </DietConstraint>
                     )
@@ -116,7 +164,7 @@ const PageComponent: FC = () => {
               <div key={menu.id}>
                 <div className="text-2xl my-2">{menu.name}</div>
                 <div>{menu.description}</div>
-                {menu.dishes.map((dish) => (
+                {menu.dishes?.map((dish) => (
                   <>
                     <div className="flex flex-col justify-center w-80 my-3">
                       <div className="flex flex-row justify-start items-center">
@@ -133,16 +181,14 @@ const PageComponent: FC = () => {
 
                     {dish.ingredients.map((ingredient) => {
                       return (
-                        <>
-                          <div key={ingredient.id}>
-                            <FontAwesomeIcon icon={faWheatAlt} />
-                            <span
-                              className={'opacity-100 font-thin mx-4 text-sm'}
-                            >
-                              {ingredient.name}
-                            </span>
-                          </div>
-                        </>
+                        <div key={ingredient.id}>
+                          <FontAwesomeIcon icon={faWheatAlt} />
+                          <span
+                            className={'opacity-100 font-thin mx-4 text-sm'}
+                          >
+                            {ingredient.name}
+                          </span>
+                        </div>
                       )
                     })}
                   </>
