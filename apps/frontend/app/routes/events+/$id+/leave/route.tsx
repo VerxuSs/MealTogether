@@ -1,10 +1,10 @@
 import { type FC } from 'react'
 
-import { Form, useActionData, useNavigate, redirect } from '@remix-run/react'
+import { useFetcher, redirect } from '@remix-run/react'
 
 import { type ActionFunctionArgs, type MetaFunction } from '@remix-run/node'
 
-import { Dialog } from '@fastack/ui-layout'
+import { Modal } from 'flowbite-react'
 
 import storage from '~/server/storage/session.server'
 
@@ -40,27 +40,17 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 }
 
 const PageComponent: FC = () => {
-  const navigate = useNavigate()
-
-  const data = useActionData<typeof action>()
-
-  const open = data === undefined
+  const fetcher = useFetcher<typeof action>()
 
   return (
-    <Dialog
-      title={<h1>Are you sure</h1>}
-      open={open}
-      close={() => {
-        navigate('../', {
-          replace: true,
-          relative: 'route',
-        })
-      }}
-    >
-      <Form method="POST" className="flex gap-x-4">
-        <Submit>Leave the event</Submit>
-      </Form>
-    </Dialog>
+    <Modal show>
+      <Modal.Header>Are you sure to leave the event?</Modal.Header>
+      <Modal.Body>
+        <fetcher.Form method="POST" className="flex gap-x-4">
+          <Submit>Leave the event</Submit>
+        </fetcher.Form>
+      </Modal.Body>
+    </Modal>
   )
 }
 

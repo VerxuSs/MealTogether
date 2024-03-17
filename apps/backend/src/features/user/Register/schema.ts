@@ -22,7 +22,7 @@ const Body = Type.Object(
     password: Type.String({
       description: "The user's password",
       minLength: 8,
-      maxLength: 20,
+      maxLength: 25,
     }),
   },
   {

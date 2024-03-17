@@ -10,7 +10,7 @@ const Reply = Type.Array(
     name: Type.String({
       description: 'name of event',
     }),
-    startDate: Type.Number({
+    startDate: Type.Integer({
       description: 'start date of the event',
     }),
     slots: Type.Number({

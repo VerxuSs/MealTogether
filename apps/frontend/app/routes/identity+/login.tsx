@@ -2,7 +2,7 @@ import type { FC } from 'react'
 
 import type { ActionFunctionArgs, MetaFunction } from '@remix-run/node'
 
-import { Form, Link, redirect } from '@remix-run/react'
+import { useFetcher, Link, redirect } from '@remix-run/react'
 
 import { Type } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
@@ -23,18 +23,14 @@ export const meta: MetaFunction = () => {
 }
 
 const ActionBody = Type.Object({
-  email: Type.String({
-    format: 'email',
-  }),
-  password: Type.String({
-    minLength: 8,
-  }),
+  email: Type.String(),
+  password: Type.String(),
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData()
 
-  const body = Value.Decode(ActionBody, form.entries())
+  const body = Value.Decode(ActionBody, Object.fromEntries(form.entries()))
 
   const user = await apiClient(request).POST('/users/connect', {
     body: {
@@ -50,28 +46,30 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       token: user.data.token,
     })
 
-    return redirect('/dashboard', {
+    return redirect('/events/dash', {
       headers: {
         'Set-Cookie': await storage.commitSession(session.state),
       },
     })
   }
 
-  return redirect('/identity/login')
+  return null
 }
 
 const PageComponent: FC = () => {
+  const fetcher = useFetcher<typeof action>()
+
   return (
     <section className="m-auto">
-      <Form method="POST">
+      <fetcher.Form method="POST">
         <div className="flex gap-y-3">
-          <Input type="text" name="email" placeholder="Email" />
+          <Input type="email" name="email" placeholder="Email" />
           <Input type="password" name="password" placeholder="Password" />
         </div>
         <div>
           <Submit>Login</Submit>
         </div>
-      </Form>
+      </fetcher.Form>
       <Link
         to={{
           pathname: '/identity/register',

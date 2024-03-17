@@ -17,10 +17,10 @@ const Reply = Type.Object(
       minimum: 1,
       maximum: 30,
     }),
-    startDate: Type.Number({
+    startDate: Type.Integer({
       description: 'start date of the event',
     }),
-    endDate: Type.Number({
+    endDate: Type.Integer({
       description: 'end date of the event',
     }),
     authorId: Type.Number({

@@ -100,7 +100,10 @@ const PageComponent: FC = () => {
       <header className="my-10 w-full flex flex-row justify-center items-center">
         <h1 className="text-2xl mx-4">{event.name}</h1>
         <h2>{event.startDate}</h2>
+        <hr />
         <Link to={`/events/${event.id}/leave`}>Leave</Link>
+        <hr />
+        <Link to={`/events/${event.id}/manage`}>Manage</Link>
       </header>
       <div className="px-3 w-full flex flex-row justify-center">
         <div>
