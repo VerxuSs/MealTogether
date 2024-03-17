@@ -10,7 +10,7 @@ export const Handler: MyRoute<Interface> = () => async (request) => {
   await prisma.participant.create({
     data: {
       userId: identity.user,
-      eventId: request.body.eventId,
+      eventId: request.params.eventId,
     },
   })
 }

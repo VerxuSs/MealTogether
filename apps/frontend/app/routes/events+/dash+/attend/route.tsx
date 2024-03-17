@@ -2,11 +2,7 @@ import { type FC } from 'react'
 
 import { Form, useActionData, useNavigate } from '@remix-run/react'
 
-import {
-  json,
-  type ActionFunctionArgs,
-  type MetaFunction,
-} from '@remix-run/node'
+import { type ActionFunctionArgs, type MetaFunction } from '@remix-run/node'
 
 import { Type } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
@@ -18,6 +14,8 @@ import storage from '~/server/storage/session.server'
 import Input from '~/client/components/commons/forms/Input'
 import Submit from '~/client/components/commons/forms/Submit'
 
+import { apiClient } from '~/client/api'
+
 export const meta: MetaFunction = () => {
   return [
     {
@@ -27,24 +25,29 @@ export const meta: MetaFunction = () => {
 }
 
 const ActionBody = Type.Object({
-  code: Type.String({
-    minLength: 4,
-    maxLength: 8,
+  code: Type.Integer({
+    description: 'The event code',
+    minimum: 0,
   }),
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const session = await storage.extractSession(request)
 
-  void session // TODO: attend event
-
   const form = await request.formData()
 
   const body = Value.Decode(ActionBody, form.entries())
 
-  void body // TODO: attend event
-
-  return json({ id: 0 })
+  await apiClient(request).POST('/events/{eventId}/join', {
+    params: {
+      path: {
+        eventId: body.code,
+      },
+    },
+    headers: {
+      Authorization: `Bearer ${session.requireValue('context').token}`,
+    },
+  })
 }
 
 const PageComponent: FC = () => {

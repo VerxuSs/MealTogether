@@ -32,23 +32,30 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
   // TODO: get event by id
 
-  // mock json
   return json(manageEventPageFixture)
 }
 
 const PageComponent: FC = () => {
   const { event, menus } = useLoaderData<typeof loader>()
+
   const [typingNewMenu, setTypingNewMenu] = useState(false)
-  const [newMenuName, setNewMenuName] = useState('')
+
   const [newMenus, setNewMenus] = useState<Menu[]>(menus)
+
+  const [newMenuName, setNewMenuName] = useState('')
   const [newMenuDescription, setNewMenuDescription] = useState('')
-  const [openDishModal, setOpenDishModal] = useState(false)
+
   const [addDishMenuId, setAddDishMenuId] = useState(-1)
+
+  const [openDishModal, setOpenDishModal] = useState(false)
+
   const [newDishIngredients, setNewDishIngredients] = useState<Ingredient[]>([])
+
   const [availableIngredients, setNewAvailableIngredients] = useState<
     Ingredient[]
   >(availableIngredientsFixture)
   const [newDishName, setNewDishName] = useState('')
+
   const [newDishDescription, setNewDishDescription] = useState('')
 
   /**

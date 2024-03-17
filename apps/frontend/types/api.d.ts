@@ -247,19 +247,17 @@ export interface paths {
     }
   }
   '/events/{eventId}/join': {
-    /** @description Make an user participate to an event and menu */
+    /** @description Make an user participate to an event */
     post: {
       parameters: {
         path: {
-          eventId: string
+          /** @description Event's id that the user want to participate */
+          eventId: number
         }
       }
-      requestBody: {
+      requestBody?: {
         content: {
-          'application/json': {
-            /** @description Event's id that the user want to participate */
-            readonly eventId: number
-          }
+          'application/json': Record<string, never>
         }
       }
       responses: {
