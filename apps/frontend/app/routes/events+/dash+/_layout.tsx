@@ -70,6 +70,7 @@ const PageComponent: FC = () => {
               })}
             </ul>
             <Link
+              replace
               to={{
                 pathname: '/events/dash/create',
               }}
@@ -101,6 +102,7 @@ const PageComponent: FC = () => {
               })}
             </ul>
             <Link
+              replace
               to={{
                 pathname: '/events/dash/attend',
               }}

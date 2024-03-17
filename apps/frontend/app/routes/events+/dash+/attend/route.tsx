@@ -29,10 +29,7 @@ export const meta: MetaFunction = () => {
 }
 
 const ActionBody = Type.Object({
-  code: Type.String({
-    description: 'The event code',
-    minimum: 0,
-  }),
+  code: Type.String(),
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {

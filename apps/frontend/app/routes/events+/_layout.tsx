@@ -49,6 +49,7 @@ const PageComponent = () => {
               )}
             </div>
             <Link
+              replace
               to={{
                 pathname: '/identity/logout',
               }}
