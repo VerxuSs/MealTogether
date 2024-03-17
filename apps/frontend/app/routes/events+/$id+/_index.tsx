@@ -54,26 +54,30 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       path: {
         eventId,
       },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
   })
 
   if (event.data) {
     const promises = event.data.menus.map(async ({ id }) => {
+      console.log('token : ', token)
+      console.log('id : ', id)
       const menu = await client.GET('/menus/{menuId}', {
         params: {
           path: {
             menuId: id,
           },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
       })
 
-      if (menu.data === undefined) throw new Error()
+      console.log('menu : ', menu)
+
+      //if (menu.data === undefined) throw new Error()
 
       return { id, ...menu.data }
     })
