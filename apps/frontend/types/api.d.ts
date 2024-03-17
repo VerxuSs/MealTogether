@@ -273,20 +273,19 @@ export interface paths {
     delete: {
       parameters: {
         path: {
-          eventId: string
+          /** @description Event's id that the user want to delete from his participations */
+          eventId: number
+        }
+      }
+      requestBody?: {
+        content: {
+          'application/json': Record<string, never>
         }
       }
       responses: {
         /** @description Default Response */
         200: {
-          content: {
-            'application/json': {
-              /** @description The event's id */
-              readonly eventId: number
-              /** @description Menu's id selected, null if menu isn't selected for moment */
-              readonly menuId: number
-            }
-          }
+          content: never
         }
       }
     }
@@ -417,11 +416,6 @@ export interface paths {
         path: {
           /** @description Menu's id that the user want to choose */
           menuId: number
-        }
-      }
-      requestBody?: {
-        content: {
-          'application/json': Record<string, never>
         }
       }
       responses: {

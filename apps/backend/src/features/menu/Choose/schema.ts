@@ -9,22 +9,13 @@ const Params = Type.Object({
   }),
 })
 
-const Body = Type.Object(
-  {},
-  {
-    readOnly: true,
-  },
-)
-
 export interface Interface extends RouteGenericInterface {
-  Body: Static<typeof Body>
   Params: Static<typeof Params>
 }
 
 export const Schema: FastifySchema = {
   tags: ['menu'],
   description: 'Choose a menu for an event',
-  body: Body,
   security: [{ bearerAuth: [] }],
   params: Params,
 }

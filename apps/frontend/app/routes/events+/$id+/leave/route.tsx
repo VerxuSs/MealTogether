@@ -25,7 +25,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   const session = await storage.extractSession(request)
 
-  await apiClient(request).POST('/events/{eventId}/join', {
+  await apiClient(request).DELETE('/events/{eventId}/leave', {
     params: {
       path: {
         eventId: +params.id,

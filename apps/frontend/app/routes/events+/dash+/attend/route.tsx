@@ -45,6 +45,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         eventId: +body.code,
       },
     },
+    body: {},
     headers: {
       Authorization: `Bearer ${session.requireValue('context').token}`,
     },

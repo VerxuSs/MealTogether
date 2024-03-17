@@ -2,26 +2,17 @@ import { MyRoute } from '../../../fastify'
 import prisma from '../../../utils/prisma'
 import { Interface } from './schema'
 
-export const Handler: MyRoute<Interface> = () => async (request, response) => {
+export const Handler: MyRoute<Interface> = () => async (request) => {
   const identity = request.requestContext.get('identity')
 
   if (identity === undefined) throw new Error('Unauthorized')
 
-  const participation = await prisma.participant.delete({
+  await prisma.participant.delete({
     where: {
       eventId_userId: {
-        eventId: parseInt(request.params.eventId),
         userId: identity.user,
+        eventId: request.params.eventId,
       },
     },
-    select: {
-      eventId: true,
-      menuId: true,
-    },
-  })
-
-  return response.send({
-    eventId: participation.eventId,
-    menuId: participation.menuId,
   })
 }

@@ -97,13 +97,19 @@ const PageComponent: FC = () => {
 
   return (
     <>
-      <header className="my-10 w-full flex flex-row justify-center items-center">
+      <header className="my-10 w-full flex flex-row gap-x-3 justify-center items-center">
         <h1 className="text-2xl mx-4">{event.name}</h1>
-        <h2>{event.startDate}</h2>
-        <hr />
-        <Link to={`/events/${event.id}/leave`}>Leave</Link>
-        <hr />
-        <Link to={`/events/${event.id}/manage`}>Manage</Link>
+        <h2>{new Date(event.startDate).toDateString()}</h2>
+        <Link to={`/events/${event.id}/leave`}>
+          <button className="my-4 p-1 bg-slate-500 text-white hover:opacity-75">
+            Leave
+          </button>
+        </Link>
+        <Link to={`/events/${event.id}/manage`}>
+          <button className="my-4 p-1 bg-slate-500 text-white hover:opacity-75">
+            Manage
+          </button>
+        </Link>
       </header>
       <div className="px-3 w-full flex flex-row justify-center">
         <div>
