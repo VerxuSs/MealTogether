@@ -3,4 +3,4 @@ import { Featured } from '../../../fastify'
 import { Schema } from './schema'
 import { Handler } from './handler'
 
-export default Featured('event.getOne', Schema, Handler)
+export default Featured('menu.choice', Schema, Handler)

@@ -4,7 +4,7 @@ import Menu from '../features/menu'
 import Dish from '../features/dish'
 
 const route = async (fastify: FastifyInstance) => {
-  fastify.get('/:menuId', Menu.GetById.Shorthand, Menu.GetById.Route(fastify))
+  fastify.get('/:menuId', Menu.Get.Shorthand, Menu.Get.Route(fastify))
 
   fastify.post(
     '/:menuId/dish',

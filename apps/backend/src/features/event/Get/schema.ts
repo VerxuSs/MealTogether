@@ -36,6 +36,22 @@ const Reply = Type.Object(
         description: 'array of participants attending the event',
       },
     ),
+    menus: Type.Array(
+      Type.Object({
+        id: Type.Number({
+          description: 'id of the menu',
+          minimum: 0,
+        }),
+        name: Type.String({
+          description: 'name of the menu',
+          minLength: 3,
+          maxLength: 20,
+        }),
+      }),
+      {
+        description: 'array of menus for the event',
+      },
+    ),
   },
   {
     readOnly: true,

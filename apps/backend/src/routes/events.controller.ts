@@ -1,11 +1,13 @@
 import { FastifyInstance } from 'fastify'
 
+import Menu from '../features/menu'
 import Event from '../features/event'
 import Participant from '../features/participant'
-import Menu from '../features/menu'
 
 const route = async (fastify: FastifyInstance) => {
   fastify.post('/create', Event.Create.Shorthand, Event.Create.Route(fastify))
+
+  fastify.get('/:eventId', Event.Get.Shorthand, Event.Get.Route(fastify))
 
   fastify.get(
     '/hosting',
@@ -16,6 +18,12 @@ const route = async (fastify: FastifyInstance) => {
     '/attending',
     Event.GetAttending.Shorthand,
     Event.GetAttending.Route(fastify),
+  )
+
+  fastify.get(
+    '/:eventId/menu',
+    Menu.Choice.Shorthand,
+    Menu.Choice.Route(fastify),
   )
 
   fastify.post(

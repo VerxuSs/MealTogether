@@ -37,6 +37,12 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
           userId: true,
         },
       },
+      menus: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   })
 
@@ -48,6 +54,10 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
       authorId: event.authorId,
       endDate: event.endDate.getTime(),
       startDate: event.startDate.getTime(),
+      menus: event.menus.map((menu) => ({
+        id: menu.id,
+        name: menu.name,
+      })),
       participants: event.participants.map((participant) => participant.userId),
     })
   }
