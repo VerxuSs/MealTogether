@@ -30,13 +30,15 @@ export const meta: MetaFunction = () => {
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (params.id === undefined) throw new Error()
 
+  const client = await apiClient(request)
+
   const session = await storage.extractSession(request)
 
   const eventId = +params.id
 
   const token = session.requireValue('context').token
 
-  const event = await apiClient(request).GET('/events/{eventId}', {
+  const event = await client.GET('/events/{eventId}', {
     params: {
       path: {
         eventId,
@@ -47,7 +49,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     },
   })
 
-  const choice = await apiClient(request).GET('/events/{eventId}/menu', {
+  const choice = await client.GET('/events/{eventId}/menu', {
     params: {
       path: {
         eventId,
@@ -59,8 +61,8 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   })
 
   if (event.data) {
-    const menus = event.data.menus.map(async ({ id }) => {
-      const { data } = await apiClient(request).GET('/menus/{menuId}', {
+    const promises = event.data.menus.map(async ({ id }) => {
+      const menu = await client.GET('/menus/{menuId}', {
         params: {
           path: {
             menuId: id,
@@ -71,13 +73,17 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
         },
       })
 
-      return { id, ...data }
+      if (menu.data === undefined) throw new Error()
+
+      return { id, ...menu.data }
     })
 
+    const menus = await Promise.all(promises)
+
     return json({
+      menus,
       event: event.data,
       choice: choice.data,
-      menus: (await Promise.all(menus)).filter(Boolean),
     })
   }
 
