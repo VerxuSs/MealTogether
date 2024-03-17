@@ -1,6 +1,6 @@
 import { type LoaderFunctionArgs, redirect } from '@remix-run/node'
 
-import { Outlet, json, useLoaderData } from '@remix-run/react'
+import { Outlet, json, useLoaderData, Link } from '@remix-run/react'
 
 import storage from '~/server/storage/session.server'
 
@@ -48,11 +48,13 @@ const PageComponent = () => {
                 </span>
               )}
             </div>
-            <div className="h-10 w-70">
-              <button className="bg-zinc-300 h-full w-full hover:bg-zinc-400">
-                Sign Out
-              </button>
-            </div>
+            <Link
+              to={{
+                pathname: '/identity/logout',
+              }}
+            >
+              Sign Out
+            </Link>
           </div>
           <img
             alt="profile"
