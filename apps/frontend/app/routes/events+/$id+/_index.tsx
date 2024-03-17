@@ -62,8 +62,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   if (event.data) {
     const promises = event.data.menus.map(async ({ id }) => {
-      console.log('token : ', token)
-      console.log('id : ', id)
       const menu = await client.GET('/menus/{menuId}', {
         params: {
           path: {
@@ -75,9 +73,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
         },
       })
 
-      console.log('menu : ', menu)
-
-      //if (menu.data === undefined) throw new Error()
+      if (menu.data === undefined) throw new Error()
 
       return { id, ...menu.data }
     })
