@@ -2,6 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Fastack backend",
+  "prisma":{
+    "seed":"ts-node src/seed/index.ts"
+  },
   "main": "app.js",
   "directories": {
     "test": "test"
@@ -10,7 +13,8 @@
     "dev": "ts-node src/index.ts",
     "prod": "node build/index.mjs",
     "build": "tsc -p tsconfig.json",
-    "prepare": "npx prisma generate"
+    "prepare": "npx prisma generate",
+    "seed": "npx prisma db seed"
   },
   "keywords": [],
   "author": "",

@@ -40,7 +40,7 @@ export const Handler: MyRoute<Interface> =
       user.password,
       request.body.password,
       {
-        secret: fastify.config.MY_ARGON2_SECRET,
+        secret: Buffer.from(fastify.config.MY_ARGON2_SECRET),
       },
     )
 

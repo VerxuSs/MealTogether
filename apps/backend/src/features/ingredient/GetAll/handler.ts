@@ -11,15 +11,10 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
 
   const ingredients = await prisma.ingredient.findMany({
     select: {
-      name: true,
       id: true,
+      name: true,
     },
   })
 
-  return await response.send({
-    ingredients: ingredients.map(({ name, id }) => ({
-      name: name,
-      id: id,
-    })),
-  })
+  return await response.send(ingredients)
 }
