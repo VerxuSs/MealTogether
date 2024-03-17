@@ -14,6 +14,7 @@ import Dish from '../../dish'
 import Menu from '../../menu'
 import Event from '../../event'
 import Participant from '../../participant'
+import Ingredient from '../../ingredient'
 
 const Claims = (features: Record<string, { Claim: string }>) => {
   return Object.values(features).map(({ Claim }) => Claim)
@@ -53,6 +54,7 @@ export const Handler: MyRoute<Interface> =
           ...Claims(Dish),
           ...Claims(Event),
           ...Claims(Participant),
+          ...Claims(Ingredient),
         ],
       }
 
