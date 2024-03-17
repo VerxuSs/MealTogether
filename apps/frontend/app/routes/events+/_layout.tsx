@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from '@remix-run/node'
+import { type LoaderFunctionArgs, redirect } from '@remix-run/node'
 
 import { Outlet, json, useLoaderData } from '@remix-run/react'
 
@@ -14,10 +14,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const session = await storage.extractSession(request)
 
+  if (session.state.get('context') === undefined) {
+    return redirect('/identity/login')
+  }
+
   return json({
-    name: 'Kilian Houpeurt',
     sub,
-    session: JSON.stringify(session.state.data),
+    name: 'Kilian Houpeurt',
   })
 }
 
