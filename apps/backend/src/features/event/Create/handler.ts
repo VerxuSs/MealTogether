@@ -10,9 +10,9 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
   const event = await prisma.event.create({
     data: {
       name: request.body.name,
-      nbParticipantMax: request.body.nbParticipantMax,
-      // startDate: request.body.startDate,
-      // endDate: request.body.endDate,
+      slots: request.body.slots,
+      endDate: new Date(request.body.endDate),
+      startDate: new Date(request.body.startDate),
       author: {
         connect: {
           id: identity.user,

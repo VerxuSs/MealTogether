@@ -1,22 +1,24 @@
 import { type FC } from 'react'
 
-import { Form, useActionData, useNavigate } from '@remix-run/react'
+import { useFetcher, useNavigate } from '@remix-run/react'
 
 import {
-  json,
   type ActionFunctionArgs,
   type MetaFunction,
+  redirect,
 } from '@remix-run/node'
+
+import { Modal } from 'flowbite-react'
 
 import { Type } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
-
-import { Dialog } from '@fastack/ui-layout'
 
 import storage from '~/server/storage/session.server'
 
 import Input from '~/client/components/commons/forms/Input'
 import Submit from '~/client/components/commons/forms/Submit'
+
+import { apiClient } from '~/client/api'
 
 export const meta: MetaFunction = () => {
   return [
@@ -27,49 +29,53 @@ export const meta: MetaFunction = () => {
 }
 
 const ActionBody = Type.Object({
-  code: Type.String({
-    minLength: 4,
-    maxLength: 8,
-  }),
+  code: Type.String(),
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const session = await storage.extractSession(request)
 
-  void session // TODO: attend event
-
   const form = await request.formData()
 
-  const body = Value.Decode(ActionBody, form.entries())
+  const body = Value.Decode(ActionBody, Object.fromEntries(form.entries()))
 
-  void body // TODO: attend event
+  await apiClient(request).POST('/events/{eventId}/join', {
+    params: {
+      path: {
+        eventId: +body.code,
+      },
+    },
+    body: {},
+    headers: {
+      Authorization: `Bearer ${session.requireValue('context').token}`,
+    },
+  })
 
-  return json({ id: 0 })
+  return redirect('/events/dash')
 }
 
 const PageComponent: FC = () => {
   const navigate = useNavigate()
 
-  const data = useActionData<typeof action>()
-
-  const open = data === undefined
+  const fetcher = useFetcher<typeof action>()
 
   return (
-    <Dialog
-      title={<h1>Attend an event</h1>}
-      open={open}
-      close={() => {
+    <Modal
+      show
+      onClose={() => {
         navigate('../', {
           replace: true,
-          relative: 'route',
         })
       }}
     >
-      <Form method="POST" className="flex gap-x-4">
-        <Input type="text" name="code" title="code" placeholder="Code" />
-        <Submit>Attend</Submit>
-      </Form>
-    </Dialog>
+      <Modal.Header>Attend an event</Modal.Header>
+      <Modal.Body>
+        <fetcher.Form method="POST" className="flex gap-x-4">
+          <Input type="text" name="code" title="code" placeholder="Code" />
+          <Submit>Attend</Submit>
+        </fetcher.Form>
+      </Modal.Body>
+    </Modal>
   )
 }
 

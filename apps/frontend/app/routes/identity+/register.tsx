@@ -2,10 +2,12 @@ import type { FC } from 'react'
 
 import type { ActionFunctionArgs, MetaFunction } from '@remix-run/node'
 
-import { Form, Link, redirect } from '@remix-run/react'
+import { useFetcher, Link, redirect } from '@remix-run/react'
 
 import { Type } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
+
+import { apiClient } from '~/client/api'
 
 import Input from '~/client/components/commons/forms/Input'
 import Submit from '~/client/components/commons/forms/Submit'
@@ -19,38 +21,45 @@ export const meta: MetaFunction = () => {
 }
 
 const ActionBody = Type.Object({
-  email: Type.String({
-    format: 'email',
-  }),
-  password: Type.String({
-    minLength: 8,
-  }),
+  email: Type.String(),
+  password: Type.String(),
+  lastname: Type.String(),
+  firstname: Type.String(),
 })
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData()
 
-  const body = Value.Decode(ActionBody, form.entries())
+  const body = Value.Decode(ActionBody, Object.fromEntries(form.entries()))
 
-  void body
+  await apiClient(request).POST('/users/register', {
+    body: {
+      email: body.email,
+      password: body.password,
+      lastname: body.lastname,
+      firstname: body.firstname,
+    },
+  })
 
-  // TODO: Implement register logic here
-
-  return redirect('/identity/register')
+  return redirect('/identity/login')
 }
 
 const PageComponent: FC = () => {
+  const fetcher = useFetcher<typeof action>()
+
   return (
     <section className="m-auto">
-      <Form method="POST">
+      <fetcher.Form method="POST">
         <div className="flex gap-y-3">
-          <Input type="text" name="email" placeholder="Email" />
+          <Input type="email" name="email" placeholder="Email" />
+          <Input type="text" name="firstname" placeholder="Firstname" />
+          <Input type="text" name="lastname" placeholder="Lastname" />
           <Input type="password" name="password" placeholder="Password" />
         </div>
         <div>
           <Submit>Register</Submit>
         </div>
-      </Form>
+      </fetcher.Form>
       <Link
         to={{
           pathname: '/identity/login',

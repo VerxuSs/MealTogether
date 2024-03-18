@@ -21,11 +21,12 @@ model Event {
 
   name String @unique
 
-  nbParticipantMax Int @default(1)
+  slots Int @default(1)
 
   status EventStatus @default(OPENED)
-  // startDate        DateTime
-  // endDate          DateTime
+
+  startDate DateTime
+  endDate   DateTime
 
   authorId Int
   author   User @relation(fields: [authorId], references: [id])
@@ -37,9 +38,12 @@ model Event {
 model User {
   id Int @id @default(autoincrement())
 
+  email String @unique
+
   firstname String
   lastname  String
-  password  String
+
+  password String
 
   diets          Diet[]
   participations Participant[]
@@ -63,6 +67,8 @@ model Participant {
 model Menu {
   id Int @id @default(autoincrement())
 
+  name String
+
   eventId Int
 
   description String?
@@ -78,6 +84,8 @@ model Menu {
 
 model Dish {
   id Int @id @default(autoincrement())
+
+  name String
 
   menuId Int
 
@@ -95,11 +103,7 @@ model Ingredient {
 
   description String?
 
-  measurementUnitId Int
-
   ingredients IngredientInDish[]
-
-  measurementUnit MeasurementUnit @relation(fields: [measurementUnitId], references: [id])
 }
 
 model Diet {
@@ -110,14 +114,6 @@ model Diet {
   User User[]
 
   menus Menu[]
-}
-
-model MeasurementUnit {
-  id Int @id @default(autoincrement())
-
-  name String @unique
-
-  ingredients Ingredient[]
 }
 
 model IngredientInDish {

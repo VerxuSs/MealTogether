@@ -11,11 +11,14 @@ const Params = Type.Object({
 
 const Body = Type.Object(
   {
+    name: Type.String({
+      description: "The menu's name",
+      maxLength: 30,
+    }),
     description: Type.String({
       description: "The menu's description",
       maxLength: 1000,
     }),
-
     diets: Type.Array(
       Type.Integer({
         description: 'The array of diets constraints id',
@@ -27,7 +30,7 @@ const Body = Type.Object(
     ),
   },
   {
-    readOnly: true, // à quoi le readonly sert ?
+    readOnly: true,
   },
 )
 
@@ -50,7 +53,7 @@ export interface Interface extends RouteGenericInterface {
 }
 
 export const Schema: FastifySchema = {
-  tags: ['menu'],
+  tags: ['event'],
   description: 'Create a menu',
   body: Body,
   params: Params,

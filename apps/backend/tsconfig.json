@@ -10,6 +10,7 @@
     "outDir": "./build",
     // Enable these options if you want stricter type checking.
     "noUnusedLocals": true,
+    "resolveJsonModule": true,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,

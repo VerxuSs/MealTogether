@@ -8,7 +8,7 @@ const formats = addFormats(
     coerceTypes: true,
     removeAdditional: 'all',
   }),
-  ['duration', 'email', 'uri', 'ipv4'],
+  ['email', 'uri', 'ipv4'],
 )
 
 export { formats }

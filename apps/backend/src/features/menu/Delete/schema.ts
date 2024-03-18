@@ -16,7 +16,7 @@ const Params = Type.Object(
 
 export interface Interface extends RouteGenericInterface {
   Params: Static<typeof Params>
-} // static convertit params en json
+}
 
 export const Schema: FastifySchema = {
   tags: ['menu'],

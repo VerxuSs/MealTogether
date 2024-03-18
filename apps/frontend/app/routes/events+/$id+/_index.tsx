@@ -1,6 +1,6 @@
-import { useState, type FC, useEffect, useMemo } from 'react'
+import { useState, type FC, useEffect, type PropsWithChildren } from 'react'
 
-import { Form, useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
 
 import {
   json,
@@ -8,8 +8,16 @@ import {
   type MetaFunction,
 } from '@remix-run/node'
 
+import { Tooltip } from 'flowbite-react'
+
+import { faWheatAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import MenuTooltipIcon from '~/shared/MenuTooltipIcon'
+
 import storage from '~/server/storage/session.server'
-import Submit from '~/client/components/commons/forms/Submit'
+
+import { apiClient } from '~/client/api'
 
 export const meta: MetaFunction = () => {
   return [
@@ -22,277 +30,219 @@ export const meta: MetaFunction = () => {
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (params.id === undefined) throw new Error()
 
+  const client = await apiClient(request)
+
   const session = await storage.extractSession(request)
 
-  void session // TODO: get event
+  const eventId = +params.id
 
-  return json({
-    title: 'Event 1',
-    date: '2022-01-01',
-    choice: {
-      dish: 0,
+  const token = session.requireValue('context').token
+
+  const event = await client.GET('/events/{eventId}', {
+    params: {
+      path: {
+        eventId,
+      },
     },
-    menus: [
-      {
-        id: 0,
-        name: 'Menu 1',
-        description: 'Description 1',
-        dishes: [
-          {
-            id: 0,
-            name: 'Dish 1',
-            description: 'Description 1',
-            ingredients: [
-              {
-                id: 0,
-                name: 'Ingredient 1',
-              },
-              {
-                id: 1,
-                name: 'Ingredient 2',
-              },
-              {
-                id: 2,
-                name: 'Ingredient 3',
-              },
-              {
-                id: 3,
-                name: 'Ingredient 4',
-              },
-            ],
-          },
-          {
-            id: 1,
-            name: 'Dish 2',
-            description: 'Description 2',
-            ingredients: [
-              {
-                id: 0,
-                name: 'Ingredient 1',
-              },
-              {
-                id: 1,
-                name: 'Ingredient 2',
-              },
-              {
-                id: 2,
-                name: 'Ingredient 3',
-              },
-              {
-                id: 3,
-                name: 'Ingredient 4',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 1,
-        name: 'Menu 2',
-        description: 'Description 2',
-        dishes: [
-          {
-            id: 0,
-            name: 'Dish 1',
-            description: 'Description 1',
-            ingredients: [
-              {
-                id: 0,
-                name: 'Ingredient 1',
-              },
-              {
-                id: 1,
-                name: 'Ingredient 2',
-              },
-              {
-                id: 2,
-                name: 'Ingredient 3',
-              },
-              {
-                id: 3,
-                name: 'Ingredient 4',
-              },
-            ],
-          },
-          {
-            id: 1,
-            name: 'Dish 2',
-            description: 'Description 2',
-            ingredients: [
-              {
-                id: 0,
-                name: 'Ingredient 1',
-              },
-              {
-                id: 1,
-                name: 'Ingredient 2',
-              },
-              {
-                id: 2,
-                name: 'Ingredient 3',
-              },
-              {
-                id: 3,
-                name: 'Ingredient 4',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 2,
-        name: 'Menu 3',
-        description: 'Description 3',
-        dishes: [
-          {
-            id: 0,
-            name: 'Dish 1',
-            description: 'Description 1',
-            ingredients: [
-              {
-                id: 0,
-                name: 'Ingredient 1',
-              },
-              {
-                id: 1,
-                name: 'Ingredient 2',
-              },
-              {
-                id: 2,
-                name: 'Ingredient 3',
-              },
-              {
-                id: 3,
-                name: 'Ingredient 4',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 3,
-        name: 'Menu 4',
-        description: 'Description 4',
-        dishes: [
-          {
-            id: 0,
-            name: 'Dish 1',
-            description: 'Description 1',
-            ingredients: [
-              {
-                id: 0,
-                name: 'Ingredient 1',
-              },
-              {
-                id: 1,
-                name: 'Ingredient 2',
-              },
-              {
-                id: 2,
-                name: 'Ingredient 3',
-              },
-              {
-                id: 3,
-                name: 'Ingredient 4',
-              },
-            ],
-          },
-        ],
-      },
-    ],
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   })
+
+  const choice = await client.GET('/events/{eventId}/menu', {
+    params: {
+      path: {
+        eventId,
+      },
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (event.data) {
+    const promises = event.data.menus.map(async ({ id }) => {
+      const menu = await client.GET('/menus/{menuId}', {
+        params: {
+          path: {
+            menuId: id,
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (menu.data === undefined) throw new Error()
+
+      return { id, ...menu.data }
+    })
+
+    const menus = await Promise.all(promises)
+
+    return json({
+      menus,
+      event: event.data,
+      choice: choice.data,
+    })
+  }
+
+  throw new Error()
 }
 
 const PageComponent: FC = () => {
-  const { title, choice, date, menus } = useLoaderData<typeof loader>()
+  const { event, choice, menus } = useLoaderData<typeof loader>()
 
-  const [selection, setSelection] = useState(choice.dish)
-
-  const menu = useMemo(
-    () => menus.find((menu) => menu.id === selection),
-    [menus, selection],
-  )
+  const [selection, setSelection] = useState(choice)
 
   useEffect(() => {
-    setSelection(choice.dish)
-  }, [choice.dish])
+    setSelection(choice)
+  }, [choice])
+
+  const menu = menus.find((menu) => menu.id === selection)
 
   return (
     <>
-      <header className="mb-4">
-        <h1 className="text-2xl">{title}</h1>
-        <h2>{date}</h2>
+      <header className="my-10 w-full flex flex-row gap-x-3 justify-center items-center">
+        <h1 className="text-2xl mx-4">{event.name}</h1>
+        <h2>{new Date(event.startDate).toDateString()}</h2>
+        <Link to={`/events/${event.id}/leave`}>
+          <button className="my-4 p-1 bg-slate-500 text-white hover:opacity-75">
+            Leave
+          </button>
+        </Link>
+        <Link to={`/events/${event.id}/manage`}>
+          <button className="my-4 p-1 bg-slate-500 text-white hover:opacity-75">
+            Manage
+          </button>
+        </Link>
       </header>
-      <div className="grid grid-cols-3 gap-x-5">
-        <div className="grid col-span-2 grid-cols-2 gap-5">
-          {menus.map((menu) => {
-            const selected = menu.id === selection
+      <div className="px-3 w-full flex flex-row justify-center">
+        <div>
+          <div className="grid gap-2 sm:grid-cols-1 lg:grid-cols-2 max-w-2xl m-1">
+            {menus.map((menu) => {
+              const selected = menu.id === selection
 
-            const highlight =
-              selected && menu.id === choice.dish ? true : selected
-
-            return (
-              <article key={menu.id} className="flex flex-col gap-y-4">
-                <header className="flex justify-between">
-                  <div>
-                    <h1 className="text-xl">{menu.name}</h1>
-                    <p>{menu.description}</p>
-                  </div>
-                  <div>
-                    {highlight === false && (
-                      <Form method="post">
-                        <input type="hidden" name="dish" value={selection} />
-                        <Submit>Choose</Submit>
-                      </Form>
-                    )}
-                  </div>
-                </header>
-                <ul className="list-none">
-                  {menu.dishes.map((dish) => (
-                    <li
-                      key={dish.id}
-                      className="px-4 py-3 flex justify-between border-2 bg-slate-50"
+              return (
+                <div key={menu.id}>
+                  <div
+                    className={
+                      selected
+                        ? 'border-4 border-pink-400'
+                        : 'border-4 border-zinc-50'
+                    }
+                    onClick={() => setSelection(menu.id)}
+                  >
+                    <article
+                      key={menu.id}
+                      className={
+                        'flex flex-col w-80 hover:opacity-75 hover:cursor-pointer'
+                      }
                     >
-                      {dish.name}
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            )
-          })}
-        </div>
-        <div className="flex">
-          {menu ? (
-            <article>
-              <h1 className="text-xl">My menu {menu.name}</h1>
-              <p>{menu.description}</p>
-              <h2>Dishes</h2>
-              <ul className="list-none">
-                {menu.dishes.map((dish) => (
-                  <li key={dish.id}>
-                    <div>
-                      <h3>{dish.name}</h3>
-                    </div>
-                    <ul>
-                      {dish.ingredients.map((ingredient) => (
-                        <li
-                          key={ingredient.id}
-                          className="px-4 py-3 flex justify-between border-2 bg-slate-50"
+                      <Tooltip content={menu.description}>
+                        <div className="bg-sky-500 h-10 w-80 flex flex-row justify-center items-center">
+                          <span className="text-white font-thin mx-4">
+                            {menu.name}
+                          </span>
+                          <MenuTooltipIcon />
+                        </div>
+                      </Tooltip>
+                      {menu.dishes?.map((dish) => (
+                        <div
+                          key={dish.id}
+                          className="border border-black h-10 w-80 border-t-0 flex flex-row justify-center items-center m-0 p-0"
                         >
-                          {ingredient.name}
-                        </li>
+                          <span className="text-black font-thin mx-4">
+                            {dish.name}
+                          </span>
+                        </div>
                       ))}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ) : (
-            <h1 className="m-auto">No menu selected</h1>
+                    </article>
+                  </div>
+                  {menu.diets?.map((diet) => {
+                    return (
+                      <DietConstraint key={diet.id} dietConstraint={diet.name}>
+                        <FontAwesomeIcon icon={faWheatAlt} />
+                        <span className={'opacity-100 font-thin mx-4 text-sm'}>
+                          {diet.name}
+                        </span>
+                      </DietConstraint>
+                    )
+                  })}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        <div className="w-80 flex flex-col justify-start items-center mx-10">
+          {menu && (
+            <div>
+              <div className="text-2xl my-2">{menu.name}</div>
+              <div>{menu.description}</div>
+              {menu.dishes?.map((dish) => (
+                <>
+                  <div className="flex flex-col justify-center w-80 my-3">
+                    <div className="flex flex-row justify-start items-center">
+                      <span className="text-black font-thin text-lg">
+                        {dish.name}
+                      </span>
+                    </div>
+                    <div className="flex flex-row justify-start items-center">
+                      <span className="text-black font-thin text-xs">
+                        {dish.description}
+                      </span>
+                    </div>
+                  </div>
+
+                  {dish.ingredients.map((ingredient) => {
+                    return (
+                      <div key={ingredient.id}>
+                        <FontAwesomeIcon icon={faWheatAlt} />
+                        <span className={'opacity-100 font-thin mx-4 text-sm'}>
+                          {ingredient.name}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </>
+              ))}
+              <div className="w-full flex flex-row justify-start my-10">
+                <button className="p-1 bg-[#0e1729] text-white font-thin w-52 text-sm hover:opacity-75">
+                  Submit
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </div>
     </>
+  )
+}
+
+const DietConstraint: FC<
+  PropsWithChildren<{
+    dietConstraint: string
+  }>
+> = ({ children, dietConstraint }) => {
+  if (dietConstraint !== 'Gluten') {
+    return (
+      <div
+        className={
+          'text-black h-10 w-80 border-t-0 opacity-100 flex flex-row justify-start items-center m-0 p-0'
+        }
+      >
+        {children}
+      </div>
+    )
+  }
+  return (
+    <div
+      className={
+        'text-red-600 h-10 w-80 border-t-0 opacity-100 flex flex-row justify-start items-center m-0 p-0'
+      }
+    >
+      {children}
+    </div>
   )
 }
 

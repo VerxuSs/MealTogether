@@ -1,18 +1,30 @@
 import { FastifyInstance } from 'fastify'
-import Menu from '../features/menu'
 
-const { Create, Choose, Delete, View } = Menu
+import Menu from '../features/menu'
+import Dish from '../features/dish'
 
 const route = async (fastify: FastifyInstance) => {
-  fastify.post('/create', Create.Shorthand, Create.Route(fastify))
-  fastify.put('/:menuId/choose', Choose.Shorthand, Choose.Route(fastify))
-  fastify.delete('/:menuId', Delete.Shorthand, Delete.Route(fastify))
-  fastify.get('/:menuId', View.Shorthand, View.Route(fastify))
+  fastify.get('/:menuId', Menu.Get.Shorthand, Menu.Get.Route(fastify))
+
+  fastify.post(
+    '/:menuId/dish',
+    Dish.Create.Shorthand,
+    Dish.Create.Route(fastify),
+  )
+
+  fastify.put(
+    '/:menuId/choose',
+    Menu.Choose.Shorthand,
+    Menu.Choose.Route(fastify),
+  )
+
+  fastify.delete(
+    '/:menuId/delete',
+    Menu.Delete.Shorthand,
+    Menu.Delete.Route(fastify),
+  )
 }
-// post et put on peut avoir un body pour le reste non
 
 export default async (fastify: FastifyInstance) => {
   await fastify.register(route, { prefix: '/menus' })
 }
-// http://127.0.0.1:3000/doc/
-// pnpm dev ( après docker)

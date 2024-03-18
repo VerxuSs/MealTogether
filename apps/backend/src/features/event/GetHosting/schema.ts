@@ -2,27 +2,28 @@ import { FastifySchema, RouteGenericInterface } from 'fastify'
 
 import { Static, Type } from '@sinclair/typebox'
 
-const Event = Type.Object({
-  id: Type.Number({
-    description: 'id of event',
-    minimum: 0,
+const Reply = Type.Array(
+  Type.Object({
+    id: Type.Number({
+      description: 'id of event',
+    }),
+    name: Type.String({
+      description: 'name of event',
+    }),
+    startDate: Type.Integer({
+      description: 'start date of the event',
+    }),
+    slots: Type.Number({
+      description: 'number of maximum participants',
+    }),
+    participants: Type.Number({
+      description: 'number of participants',
+    }),
   }),
-  name: Type.String({
-    description: 'name of event',
-    minLength: 3,
-    maxLength: 20,
-  }),
-  nbParticipantMax: Type.Number({
-    minimum: 1,
-    maximum: 30,
-  }),
-  // startDate: Type.String(), // Adjust the type if needed
-  // endDate: Type.String(), // Adjust the type if needed
-})
-
-const Reply = Type.Array(Event, {
-  description: 'array of event where connected user is the author',
-})
+  {
+    description: 'array of event where connected user is the author',
+  },
+)
 
 export interface Interface extends RouteGenericInterface {
   Reply: Static<typeof Reply>

@@ -1,57 +1,70 @@
+import argon2 from 'argon2'
+
+import { Static } from '@sinclair/typebox'
+
 import { MyRoute, MySessionSchema } from '../../../fastify'
 
 import prisma from '../../../utils/prisma'
 
 import { Interface } from './schema'
-import { Static } from '@sinclair/typebox'
-import Hook from '../../hook'
+
+import User from '../index'
+import Diet from '../../diet'
+import Dish from '../../dish'
+import Menu from '../../menu'
 import Event from '../../event'
 import Participant from '../../participant'
-import User from '../index'
+import Ingredient from '../../ingredient'
 
-export const Handler: MyRoute<Interface> = () => async (request, response) => {
-  const user = await prisma.user.findFirst({
-    where: {
-      firstname: request.body.firstname,
-      lastname: request.body.lastname,
-    },
-    select: {
-      id: true,
-      password: true,
-    },
-  })
+const Claims = (features: Record<string, { Claim: string }>) => {
+  return Object.values(features).map(({ Claim }) => Claim)
+}
 
-  if (user === null) {
-    return response.unauthorized()
-  }
+export const Handler: MyRoute<Interface> =
+  (fastify) => async (request, response) => {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: request.body.email,
+      },
+      select: {
+        id: true,
+        password: true,
+      },
+    })
 
-  if (user.password === request.body.password) {
-    const payload: Static<typeof MySessionSchema> = {
-      user: user.id,
-      claims: [
-        Hook.Sse.Claim,
-        Event.Create.Claim,
-        Event.Delete.Claim,
-        Event.GetOne.Claim,
-        Event.ChangeStatus.Claim,
-        Participant.ChooseMenu.Claim,
-        Participant.Leave.Claim,
-        Participant.Join.Claim,
-        User.LinkDiet.Claim,
-        User.GetAllDiet.Claim,
-        User.UnlinkDiet.Claim,
-        Event.GetHosting.Claim,
-        Event.GetAttending.Claim,
-      ],
+    if (user === null) {
+      return response.unauthorized()
     }
 
-    const token = await response.jwtSign(payload)
+    const authenticate = await argon2.verify(
+      user.password,
+      request.body.password,
+      {
+        secret: Buffer.from(fastify.config.MY_ARGON2_SECRET),
+      },
+    )
 
-    return response.send({
-      id: user.id,
-      token: token,
-    })
+    if (authenticate) {
+      const payload: Static<typeof MySessionSchema> = {
+        user: user.id,
+        claims: [
+          ...Claims(Diet),
+          ...Claims(User),
+          ...Claims(Menu),
+          ...Claims(Dish),
+          ...Claims(Event),
+          ...Claims(Participant),
+          ...Claims(Ingredient),
+        ],
+      }
+
+      const token = await response.jwtSign(payload)
+
+      return response.send({
+        id: user.id,
+        token: token,
+      })
+    }
+
+    return response.unauthorized()
   }
-
-  return response.unauthorized()
-}

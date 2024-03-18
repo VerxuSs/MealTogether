@@ -1,18 +1,15 @@
-export * from './Choose'
-export * from './Create'
-export * from './Delete'
-export * from './GetById'
-
+import Get from './Get'
+import Choice from './Choice'
 import Choose from './Choose'
 import Create from './Create'
 import Delete from './Delete'
-import View from './GetById'
 
 const Menu = {
+  Get,
   Create,
+  Choice,
   Choose,
   Delete,
-  View,
 }
 
 export { Menu }

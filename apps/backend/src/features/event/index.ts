@@ -1,14 +1,14 @@
+import Get from './Get'
 import Create from './Create'
 import Delete from './Delete'
-import GetOne from './GetOne'
 import ChangeStatus from './ChangeStatus'
 import GetHosting from './GetHosting'
 import GetAttending from './GetAttending'
 
 const Event = {
+  Get,
   Create,
   Delete,
-  GetOne,
   ChangeStatus,
   GetHosting,
   GetAttending,
