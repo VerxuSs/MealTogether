@@ -60,7 +60,7 @@ const PageComponent: FC = () => {
   const fetcher = useFetcher<typeof action>()
 
   return (
-    <section className="m-auto">
+    <div className="w-full flex flex-col h-full justify-center items-center">
       <fetcher.Form method="POST">
         <div className="flex gap-y-3">
           <Input type="email" name="email" placeholder="Email" />
@@ -77,7 +77,7 @@ const PageComponent: FC = () => {
       >
         Register
       </Link>
-    </section>
+    </div>
   )
 }
 
